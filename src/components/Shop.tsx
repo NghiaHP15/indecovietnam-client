@@ -6,7 +6,6 @@ import { client } from "@/sanity/lib/client";
 import { Loader2 } from "lucide-react";
 import NoProductAvailable from "./NoProductAvailable";
 import ProductCard from "./ProductCard";
-import { GET_SHOP_PRODUCT } from "@/sanity/queries/query";
 import { Brand, Category, Product } from "../../sanity.types";
 import { Title } from "./ui/text";
 import ListCategory from "./ListCategory";
@@ -30,7 +29,7 @@ const Shop = ({ categories, brands }: Props) => {
     brandParams || null
   );
   const [selectedPrice, setSelectedPrice] = useState<string | null>(null);
-  const fetchProducts = async () => {
+   const fetchProducts = async () => {
     setLoading(true);
     try {
       let minPrice = 0;
@@ -40,7 +39,16 @@ const Shop = ({ categories, brands }: Props) => {
         minPrice = min;
         maxPrice = max;
       }
-      const query = GET_SHOP_PRODUCT;
+      const query = `
+      *[_type == 'product' 
+        && (!defined($selectedCategory) || references(*[_type == "category" && slug.current == $selectedCategory]._id))
+        && (!defined($selectedBrand) || references(*[_type == "brand" && slug.current == $selectedBrand]._id))
+        && price >= $minPrice && price <= $maxPrice
+      ] 
+      | order(name asc) {
+        ...,"categories": categories[]->title
+      }
+    `;
       const data = await client.fetch(
         query,
         { selectedCategory, selectedBrand, minPrice, maxPrice },
