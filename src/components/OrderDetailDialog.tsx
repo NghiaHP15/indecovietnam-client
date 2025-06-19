@@ -14,10 +14,10 @@ import {
 import Image from "next/image";
 import { urlFor } from "@/sanity/lib/image";
 import PriceFormatter from "./PriceFormatter";
-import { Order } from "../../sanity.types";
+import { MY_ORDERS_QUERYResult } from "../../sanity.types";
 
 interface OrderDetailsDialogProps {
-  order: Order[number] | null;
+  order: MY_ORDERS_QUERYResult[number] | null;
   isOpen: boolean;
   onClose: () => void;
 }

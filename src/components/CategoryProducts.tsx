@@ -8,7 +8,6 @@ import { Loader2 } from "lucide-react";
 import NoProductAvailable from "./NoProductAvailable";
 import ProductCard from "./ProductCard";
 import { Category, Product } from "../../sanity.types";
-import { PRODUTS_BY_CATEGORY_QUERY } from "@/sanity/queries/query";
 interface Props {
   categories: Category[];
   slug: string;
@@ -28,7 +27,10 @@ const CategoryProducts = ({ categories, slug }: Props) => {
   const fetchProducts = async (categorySlug: string) => {
     setLoading(true);
     try {
-      const query =  PRODUTS_BY_CATEGORY_QUERY;
+      const query = `
+        *[_type == 'product' && references(*[_type == "category" && slug.current == $categorySlug]._id)] | order(name asc){
+        ...,"categories": categories[]->title}
+      `;
       const data = await client.fetch(query, { categorySlug });
       setProducts(data);
     } catch (error) {

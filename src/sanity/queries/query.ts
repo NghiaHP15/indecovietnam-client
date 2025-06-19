@@ -41,13 +41,6 @@ const GET_ALL_BLOG = defineQuery(
   `
 );
 
-const PRODUTS_BY_CATEGORY_QUERY = defineQuery(
-  `
-    *[_type == 'product' && references(*[_type == "category" && slug.current == $categorySlug]._id)] | order(name asc){
-    ...,"categories": categories[]->title}
-  `
-)
-
 const SINGLE_BLOG_QUERY =
   defineQuery(`*[_type == "blog" && slug.current == $slug][0]{
   ..., 
@@ -67,19 +60,6 @@ const BLOG_CATEGORIES = defineQuery(
     ...
     }
   }`
-);
-
-const GET_SHOP_PRODUCT = defineQuery(
-  `
-      *[_type == 'product' 
-        && (!defined($selectedCategory) || references(*[_type == "category" && slug.current == $selectedCategory]._id))
-        && (!defined($selectedBrand) || references(*[_type == "brand" && slug.current == $selectedBrand]._id))
-        && price >= $minPrice && price <= $maxPrice
-      ] 
-      | order(name asc) {
-        ...,"categories": categories[]->title
-      }
-    `
 );
 
 const OTHERS_BLOG_QUERY = defineQuery(`*[
@@ -112,6 +92,4 @@ export {
   SINGLE_BLOG_QUERY,
   BLOG_CATEGORIES,
   OTHERS_BLOG_QUERY,
-  PRODUTS_BY_CATEGORY_QUERY,
-  GET_SHOP_PRODUCT,
 };

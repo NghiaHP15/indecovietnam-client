@@ -12,12 +12,12 @@ import { format } from "date-fns";
 import { X } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { Order } from "../../sanity.types";
+import { MY_ORDERS_QUERYResult  } from "../../sanity.types";
 import OrderDetailDialog from "./OrderDetailDialog";
 
-const OrdersComponent = ({ orders }: { orders: Order }) => {
+const OrdersComponent = ({ orders }: { orders: MY_ORDERS_QUERYResult }) => {
   const [selectedOrder, setSelectedOrder] = useState<
-    Order[number] | null
+    MY_ORDERS_QUERYResult[number] | null
   >(null);
   const handleDelete = () => {
     toast.error("Delete method applied for Admin");

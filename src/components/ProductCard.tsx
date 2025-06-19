@@ -1,4 +1,3 @@
-
 import { urlFor } from "@/sanity/lib/image";
 import Image from "next/image";
 import React from "react";
@@ -6,12 +5,12 @@ import Link from "next/link";
 import { StarIcon } from "@sanity/icons";
 import { Flame } from "lucide-react";
 import PriceView from "./PriceView";
+import ProductSideMenu from "./ProductSideMenu";
 import AddToCartButton from "./AddToCartButton";
 import { Product } from "../../sanity.types";
 import { Title } from "./ui/text";
-import ProductSideMenu from "./ProductSideMenu";
 
-const ProductCard = ({ product }: { product: Product }) => {
+const ProductCard = ({ product } : { product: Product }) => {
   return (
     <div className="text-sm border-[1px] rounded-md border-darkBlue/20 group bg-white">
       <div className="relative group overflow-hidden bg-shop_light_bg">
