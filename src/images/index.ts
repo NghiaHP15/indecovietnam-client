@@ -1,4 +1,9 @@
-import paypalLogo from "./paypalLogo.png";
 import emptyCart from "./emptyCart.png";
-import banner_1 from "./banner/banner_1.png";
-export { paypalLogo, emptyCart, banner_1 };
+import bgLogin from "./bglogin.png";
+import bgBreakcrum from "./bg-breakcrum.png";
+import techcombank from "./data/payment/techcombank.png";
+import vnpay from "./data/payment/vnpay.jpg";
+import momo from "./data/payment/momo.png";
+import defautUser from "./user.png";
+
+export { emptyCart, bgLogin , bgBreakcrum, techcombank, vnpay, momo, defautUser };

@@ -10,44 +10,43 @@ const NotFoundPage = () => {
           <Logo />
 
           <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
-            Looking for something?
+            Bạn đang tìm kiếm gì?
           </h2>
           <p className="mt-2 text-sm text-gray-600">
-            We&apos;re sorry. The Web address you entered is not a functioning
-            page on our site.
+            Chúng tôi xin lỗi. Địa chỉ web bạn đã nhập không phải là một trang hoạt động trên trang web của chúng tôi.
           </p>
         </div>
         <div className="mt-8 space-y-6">
           <div className="rounded-md shadow-sm space-y-4">
             <Link
               href="/"
-              className="w-full flex items-center justify-center px-4 py-2 border border-transparent text-sm font-semibold rounded-md text-white bg-shop_dark_green/80 hover:bg-shop_dark_green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amazonOrangeDark hoverEffect"
+              className="w-full flex items-center justify-center px-4 py-2 border border-transparent text-sm font-semibold rounded-md text-white bg-dark_brownish/80 hover:bg-dark_brownish focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amazonOrangeDark hoverEffect"
             >
-              Go to Shopcart&apos;s home page
+              Ghé thăm trang chủ
             </Link>
             <Link
               href="/help"
               className="w-full flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-semibold rounded-md text-amazonBlue bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amazonBlue"
             >
-              Help
+              Giúp đỡ
             </Link>
           </div>
         </div>
         <div className="mt-8 text-center">
           <p className="text-sm text-gray-600">
-            Need help? Visit the{" "}
+            Bạn cần giúp đỡ? Gé thăm{" "}
             <Link
               href="/help"
               className="font-medium text-amazon-blue hover:text-amazon-blue-dark"
             >
-              Help section
+              Phần trợ giúp
             </Link>{" "}
             or{" "}
             <Link
               href="/contact"
               className="font-medium text-amazon-blue hover:text-amazon-blue-dark"
             >
-              contact us
+              Liên hệ
             </Link>
           </p>
         </div>

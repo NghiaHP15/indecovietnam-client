@@ -1,89 +1,53 @@
-import { urlFor } from "@/sanity/lib/image";
 import Image from "next/image";
 import React from "react";
 import Link from "next/link";
-import { StarIcon } from "@sanity/icons";
-import { Flame } from "lucide-react";
+import { Product } from "@/constants/types";
+import { ProductStatus } from "@/constants/enum";
 import PriceView from "./PriceView";
 import ProductSideMenu from "./ProductSideMenu";
-import AddToCartButton from "./AddToCartButton";
-import { Product } from "../../sanity.types";
-import { Title } from "./ui/text";
 
-const ProductCard = ({ product } : { product: Product }) => {
+const ProductCard = ({ product, basic = false } : { product: Product, basic?: boolean }) => {
+
+  const productVariant = product?.variants.find((item) => item.show === true);
+  
   return (
-    <div className="text-sm border-[1px] rounded-md border-darkBlue/20 group bg-white">
-      <div className="relative group overflow-hidden bg-shop_light_bg">
-        {product?.images && (
-          <Link href={`/product/${product?.slug?.current}`}>
-            <Image
-              src={urlFor(product.images[0]).url()}
-              alt="productImage"
-              width={500}
-              height={500}
-              priority
-              className={`w-full h-64 object-contain overflow-hidden transition-transform bg-shop_light_bg duration-500 
-              ${product?.stock !== 0 ? "group-hover:scale-105" : "opacity-50"}`}
-            />
-          </Link>
-        )}
-        <ProductSideMenu product={product} />
-        {product?.status === "sale" ? (
-          <p className="absolute top-2 left-2 z-10 text-xs border border-darkColor/50 px-2 rounded-full group-hover:border-lightGreen hover:text-shop_dark_green hoverEffect">
-            Sale!
-          </p>
-        ) : (
-          <Link
-            href={"/deal"}
-            className="absolute top-2 left-2 z-10 border border-shop_orange/50 p-1 rounded-full group-hover:border-shop_orange hover:text-shop_dark_green hoverEffect"
-          >
-            <Flame
-              size={18}
-              fill="#fb6c08"
-              className="text-shop_orange/50 group-hover:text-shop_orange hoverEffect"
-            />
-          </Link>
-        )}
-      </div>
-      <div className="p-3 flex flex-col gap-2">
-        {product?.categories && (
-          <p className="uppercase line-clamp-1 text-xs font-medium text-lightText">
-            {product.categories.map((cat) => cat).join(", ")}
-          </p>
-        )}
-        <Title className="text-sm line-clamp-1">{product?.name}</Title>
-        <div className="flex items-center gap-2">
-          <div className="flex items-center">
-            {[...Array(5)].map((_, index) => (
-              <StarIcon
-                key={index}
-                className={
-                  index < 4 ? "text-shop_light_green" : " text-lightText"
-                }
-                fill={index < 4 ? "#93D991" : "#ababab"}
+    <>
+    <div className={`text-sm group p-3 ${!basic && "hover:bg-white hover:shadow-[0_7px_20px_rgba(0,0,0,.05)] hover:scale-105"} hoverEffect`}>
+      <div className="relative  ">
+        {product?.image && (
+          <div className={`shadow-[0_7px_20px_rgba(0,0,0,.05)] ${!basic && "group-hover:shadow-none"} hoverEffect`}>
+            <Link href={`/product/${product?.slug}`} className="relative">
+              <Image
+                src={productVariant?.image || product?.image}
+                alt="productImage"
+                width={400}
+                height={600}
+                priority
+                className={`w-full h-auto object-contain`}
               />
-            ))}
+              <div className={`${product?.status === ProductStatus.HOT ? "bg-dark_brownish" : product?.status === ProductStatus.NEW ? "bg-light_brownish" : "bg-red-500/70"} absolute opacity-0 group-hover:opacity-100 group-hover:left-3 left-0 top-3 z-10 text-xs text-white px-3 py-1 rounded-[2px] hoverEffect`}>{product?.status === ProductStatus.HOT ? "Hot" : product?.status === ProductStatus.NEW ? "New" : "Sale"}</div>
+            </Link>
           </div>
-          <p className="text-lightText text-xs tracking-wide">5 Reviews</p>
+        )}
+        <ProductSideMenu product={product} variant={product?.variants[0]} className="opacity-0 group-hover:opacity-100 group-hover:right-3 hoverEffect" />
+      </div>
+      <div className="p-3 flex flex-col gap-1">
+        <Link href={`/product/${product?.slug}`} >
+          <h3 className="text-base text-darkColor">{product.name}</h3>
+        </Link>
+        <div className=" relative h-6 overflow-hidden ">
+          <div className="opacity-100 absolute top-0 group-hover:opacity-0 group-hover:top-[-20px] hoverEffect">
+            <PriceView
+              price={productVariant?.price || product.variants[0].price}
+              discount={productVariant?.discount || product.variants[0].discount}
+              className="text-sm"
+            />
+          </div>
+          <Link href={`/product/${product?.slug}`} className={`absolute top-0 underline underline-offset-2 opacity-0 group-hover:opacity-100 group-hover:top-0 hoverEffect`}>Mua sản phẩm</Link>
         </div>
-
-        <div className="flex items-center gap-2.5">
-          <p className="font-medium">In Stock</p>
-          <p
-            className={`${product?.stock === 0 ? "text-red-600" : "text-shop_dark_green/80 font-semibold"}`}
-          >
-            {(product?.stock as number) > 0 ? product?.stock : "unavailable"}
-          </p>
-        </div>
-
-        <PriceView
-          price={product?.price}
-          discount={product?.discount}
-          className="text-sm"
-        />
-        <AddToCartButton product={product} className="w-36 rounded-full" />
       </div>
     </div>
+    </>
   );
 };
 

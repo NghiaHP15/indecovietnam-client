@@ -22,7 +22,7 @@ const SocialMedia = ({className, iconClassName, tooltipClassName} : SocialMediaP
                             key={item?.title}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className={cn("p-2 border rounded-full hover:text-white hover:border-shop_light_green hoverEffect", iconClassName)}
+                            className={cn("p-2 border rounded-full hover:text-white hover:border-light_brownish hoverEffect", iconClassName)}
                         >
                             {item?.icon}
                         </Link>

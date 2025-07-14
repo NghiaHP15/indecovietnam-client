@@ -1,30 +1,36 @@
 "use client";
+import toast from "react-hot-toast";
+import { FavoriteItem, Product, ProductVariant } from "@/constants/types";
 import { Heart } from "lucide-react";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import toast from "react-hot-toast";
-import { Product } from "../../sanity.types";
 import useStore from "../../store";
 
-const FavoriteButton = ({ showProduct = false, product } : { showProduct?: boolean, product?: Product | null | undefined }) => {
+interface Props {
+  product?: Product,
+  variant?: ProductVariant,
+  showProduct?: boolean
+}
+
+const FavoriteButton = ({ showProduct = false, product, variant } : Props) => {
   const { favoriteProduct, addToFavorite } = useStore();
-  const [existingProduct, setExistingProduct] = useState<Product | null>(null);
+  const [ existingProductVariant, setExistingProductVariant ] = useState<FavoriteItem | null>(null);
   
   useEffect(() => {
     const availableItem = favoriteProduct.find(
-      (item) => item?._id === product?._id
+      (item) => item?.variant?.id === variant?.id && item?.product?.id === product?.id
     );
-    setExistingProduct(availableItem || null);
-  }, [product, favoriteProduct]);
+    setExistingProductVariant(availableItem || null);
+  }, [product, variant, favoriteProduct]);
 
   const handleFavorite = (e: React.MouseEvent<HTMLSpanElement>) => {
     e.preventDefault();
-    if (product?._id) {
-      addToFavorite(product).then(() => {
+    if (product?.id && variant?.id) {
+      addToFavorite(product, variant).then(() => {
         toast.success(
-          existingProduct
-            ? "Product removed successfully!"
-            : "Product added successfully!"
+          existingProductVariant
+            ? "Đã xóa sản phâm!"
+            : "Đã thêm sản phẩm!"
         );
       });
     }
@@ -34,23 +40,23 @@ const FavoriteButton = ({ showProduct = false, product } : { showProduct?: boole
     <>
       {!showProduct ? (
         <Link href={"/wishlist"} className="group relative">
-          <Heart className="w-5 h-5 hover:text-shop_light_green hoverEffect" />
-          <span className="absolute -top-1 -right-1 bg-shop_dark_green text-white h-3.5 w-3.5 rounded-full text-xs font-semibold flex items-center justify-center">
+          <Heart className="w-5 h-5 hover:text-light_brownish hoverEffect" />
+          <span className="absolute -top-1 -right-1 bg-dark_brownish text-white h-3.5 w-3.5 rounded-full text-xs font-semibold flex items-center justify-center">
             {favoriteProduct?.length ? favoriteProduct?.length : 0}
           </span>
         </Link>
       ) : (
         <button
           onClick={handleFavorite}
-          className="group relative hover:text-shop_light_green hoverEffect border border-shop_light_green/80 hover:border-shop_light_green p-1.5 rounded-sm"
+          className="group relative hover:text-light_brownish hoverEffect border border-light_brownish/80 hover:border-light_brownish p-1.5 rounded-sm"
         >
-          {existingProduct ? (
+          {existingProductVariant ? (
             <Heart
-              fill="#3b9c3c"
-              className="text-shop_light_green/80 group-hover:text-shop_light_green hoverEffect mt-.5 w-5 h-5"
+              fill="#c7966f"
+              className="text-light_brownish/80 group-hover:text-light_brownish hoverEffect mt-.5 w-5 h-5"
             />
           ) : (
-            <Heart className="text-shop_light_green/80 group-hover:text-shop_light_green hoverEffect mt-.5 w-5 h-5" />
+            <Heart className="text-light_brownish/80 group-hover:text-light_brownish hoverEffect mt-.5 w-5 h-5" />
           )}
         </button>
       )}

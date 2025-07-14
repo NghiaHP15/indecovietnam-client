@@ -1,59 +1,60 @@
 "use client";
-import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
-import { ShoppingBag } from "lucide-react";
-import toast from "react-hot-toast";
-import PriceFormatter from "./PriceFormatter";
+import { Product, ProductVariant } from "@/constants/types";
 import useStore from "../../store";
-import { Product } from "../../sanity.types";
+import toast from "react-hot-toast";
 import QuantityButtons from "./QuantityButton";
+import PriceFormatter from "./PriceFormatter";
 
 interface Props {
   product: Product;
+  variant: ProductVariant;
   className?: string;
 }
 
-const AddToCartButton = ({ product, className }: Props) => {
+const AddToCartButton = ({ product, variant, className }: Props) => {
+  
   const { addItem, getItemCount } = useStore();
-  const itemCount = getItemCount(product?._id);
-  const isOutOfStock = product?.stock === 0;
+  const itemCount = getItemCount(variant?.id);
+  const isOutOfStock = variant?.inventoryitems === 0;
 
   const handleAddToCart = () => {
-    if ((product?.stock as number) > itemCount) {
-      addItem(product);
+    if ((variant?.inventoryitems as number) > itemCount) {
+      addItem(product, variant);
       toast.success(
-        `${product?.name?.substring(0, 12)}... added successfully!`
+        `${product?.name?.substring(0, 12)}... Thêm thành công!`
       );
     } else {
-      toast.error("Can not add more than available stock");
+      toast.error("Không thể vào giỏ hàng");
     }
   };
+  
   return (
-    <div className="w-full h-12 flex items-center">
+    <div className="w-full flex items-center">
       {itemCount ? (
         <div className="text-sm w-full">
           <div className="flex items-center justify-between">
-            <span className="text-xs text-darkColor/80">Quantity</span>
-            <QuantityButtons product={product} />
+            <span className="text-base text-darkColor">Số lượng</span>
+            <QuantityButtons variant={variant} product={product} />
           </div>
           <div className="flex items-center justify-between border-t pt-1">
-            <span className="text-xs font-semibold">Subtotal</span>
+            <span className="text-base font-bold">Tổng giá:</span>
             <PriceFormatter
-              amount={product?.price ? product?.price * itemCount : 0}
+              className="text-base font-bold"
+              amount={variant?.price ? variant?.price * itemCount : 0}
             />
           </div>
         </div>
       ) : (
-        <Button
+        <button
           onClick={handleAddToCart}
           disabled={isOutOfStock}
-          className={cn(
-            "w-full bg-shop_dark_green/80 text-lightBg shadow-none border border-shop_dark_green/80 font-semibold tracking-wide text-white hover:bg-shop_dark_green hover:border-shop_dark_green hoverEffect",
-            className
-          )}
+          className={cn("px-4 py-1 relative overflow-hidden border rounded-sm border-gray-300 group", className)}
         >
-          <ShoppingBag /> {isOutOfStock ? "Out of Stock" : "Add to Cart"}
-        </Button>
+          
+          <span className="relative text-sm md:text-base z-10 text-darkColor group-hover:text-white hoverEffect">{isOutOfStock ? "Không còn hàng" : "Thêm vào giỏ"}</span>
+          <div className="absolute inset-0 bg-btn_light_brownish transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-in-out z-0" />
+        </button>
       )}
     </div>
   );

@@ -1,71 +1,91 @@
 "use client";
-import { urlFor } from "@/sanity/lib/image";
-import { AnimatePresence, motion } from "motion/react";
-import Image from "next/image";
-import React, { useState } from "react";
-import { internalGroqTypeReferenceTo, SanityImageCrop, SanityImageHotspot } from "../../sanity.types";
 
-interface Props {
-  images?: Array<{
-    asset?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-    };
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    _type: "image";
-    _key: string;
-  }>;
-  isStock?: number | undefined;
+import { useEffect, useState } from "react";
+import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
+import "yet-another-react-lightbox/styles.css";
+import "yet-another-react-lightbox/plugins/captions.css";
+import "yet-another-react-lightbox/plugins/thumbnails.css";
+
+import { Carousel, CarouselContent, CarouselItem } from "./ui/carousel";
+import ImageWapper from "./ImageWapper";
+
+interface ImageViewProps {
+  images: string[] ;
+  is_active: string;
 }
 
-const ImageView = ({ images = [], isStock }: Props) => {
-  const [active, setActive] = useState(images[0]);
+export default function ImageView({ images, is_active }: ImageViewProps) {
+  const [active, setActive] = useState<string>(images[0] || "");
+  const [open, setOpen] = useState(false);
+  const [index, setIndex] = useState(0);
+
+  // Cập nhật ảnh đang active nếu props thay đổi
+  useEffect(() => {
+    if (images.length === 0) return;
+    setActive(is_active || images[0]);
+  }, [is_active, images]);
+
+  const handlePreviewClick = () => {
+    const idx = images.findIndex((img) => img === active);
+    setIndex(idx >= 0 ? idx : 0);
+    setOpen(true);
+  };
+
+  if (images.length === 0) return null;
 
   return (
     <div className="w-full md:w-1/2 space-y-2 md:space-y-4">
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={active?._key}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.5 }}
-          className="w-full max-h-[550px] min-h-[450px] border border-darkColor/10 rounded-md group overflow-hidden"
-        >
-          <Image
-            src={urlFor(active).url()}
-            alt="productImage"
-            width={700}
-            height={700}
-            priority
-            className={`w-full h-96 max-h-[550px] min-h-[500px] object-contain group-hover:scale-110 hoverEffect rounded-md ${
-              isStock === 0 ? "opacity-50" : ""
-            }`}
-          />
-        </motion.div>
-      </AnimatePresence>
-      <div className="grid grid-cols-6 gap-2 h-20 md:h-24">
-        {images?.map((image) => (
-          <button
-            key={image?._key}
-            onClick={() => setActive(image)}
-            className={`border rounded-md overflow-hidden ${active?._key === image?._key ? "border-darkColor opacity-100" : "opacity-80"}`}
+      <div className="flex flex-row-reverse gap-5">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={active}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+            className="w-full h-auto border border-darkColor/10 rounded-md group overflow-hidden cursor-pointer"
+            onClick={handlePreviewClick}
           >
             <Image
-              src={urlFor(image).url()}
-              alt={`Thumbnail ${image._key}`}
-              width={100}
-              height={100}
-              className="w-full h-auto object-contain"
+              src={active}
+              alt="productImage"
+              width={700}
+              height={700}
+              priority
+              className="w-full h-auto object-contain group-hover:scale-110 hoverEffect rounded-md"
             />
-          </button>
-        ))}
+          </motion.div>
+        </AnimatePresence>
+
+        <div>
+          <Carousel orientation="vertical" className="w-full h-full">
+            <CarouselContent>
+              {images.map((image, i) => (
+                <CarouselItem key={`thumb-${i}`} className="basis-1/5">
+                  <button
+                    onClick={() => setActive(image)}
+                    className="rounded-md relative overflow-hidden"
+                  >
+                    <Image
+                      src={image}
+                      alt={`Thumbnail ${i}`}
+                      width={80}
+                      height={100}
+                      className="w-full h-auto object-contain relative z-0"
+                    />
+                    {image === active && (
+                      <div className="absolute inset-0 bg-black/40 z-10 border border-primary" />
+                    )}
+                  </button>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+          </Carousel>
+        </div>
       </div>
+
+      <ImageWapper open={open} setOpen={setOpen} images={images} index={index} />
     </div>
   );
-};
-
-export default ImageView;
+}

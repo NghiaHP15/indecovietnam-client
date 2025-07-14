@@ -1,46 +1,54 @@
 "use client";
+import { FavoriteItem, Product, ProductVariant } from "@/constants/types";
 import { cn } from "@/lib/utils";
 import { Heart } from "lucide-react";
+import useStore from "../../store";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { Product } from "../../sanity.types";
-import useStore from "../../store";
 
-const ProductSideMenu = ({ product, className }: { product: Product, className?: string; }) => {
+interface Props {
+  product: Product;
+  variant: ProductVariant;
+  className?: string;
+}
+
+const ProductSideMenu = ({ product, variant, className }: Props) => {  
+
   const { favoriteProduct, addToFavorite } = useStore();
-  const [existingProduct, setExistingProduct] = useState<Product | null>(null);
+  const [ existingProduct, setExistingProduct ] = useState<FavoriteItem | null>(null);
 
   useEffect(() => {
     const availableProduct = favoriteProduct?.find(
-      (item) => item?._id === product?._id
+      (item) => item?.variant?.id === variant?.id && item?.product?.id === product?.id
     );
     setExistingProduct(availableProduct || null);
-  }, [product, favoriteProduct]);
+  }, [product, variant, favoriteProduct]);
 
   const handleFavorite = (e: React.MouseEvent<HTMLSpanElement>) => {
     e.preventDefault();
-    if (product?._id) {
-        addToFavorite(product).then(() => {
+    if (product?.id && variant?.id) {
+        addToFavorite(product, variant).then(() => {
             toast.success(
             existingProduct
-                ? "Product removed successfully!"
-                : "Product added successfully!"
+                ? "Xóa sản phẩm thành công!"
+                : "Thêm sản phẩm thành công!"
             );
         });
     }
   };
+
   return (
     <div
-      className={cn("absolute top-2 right-2 hover:cursor-pointer", className)}
+      className={cn("absolute top-3 right-0 hover:cursor-pointer", className)}
     >
       <div
         onClick={handleFavorite}
-        className={`p-2.5 rounded-full hover:bg-shop_dark_green/80 hover:text-white hoverEffect  ${existingProduct ? "bg-shop_dark_green/80 text-white" : "bg-lightColor/10"}`}
+        className={`p-3 rounded-full shadow-[0_7px_20px_rgba(0,0,0,.07)] hover:bg-dark_brownish/80 hover:text-white hoverEffect  ${existingProduct ? "bg-dark_brownish/80 text-white" : "bg-lightColor/10"}`}
       >
         <Heart size={15} />
       </div>
     </div>
-  );
+  )
 };
 
 export default ProductSideMenu;

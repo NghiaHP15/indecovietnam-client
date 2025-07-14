@@ -2,13 +2,13 @@ import { cn } from "@/lib/utils"
 
 const Title = ({children, className} : {children: React.ReactNode, className?: string}) => {
     return (
-        <h2 className={cn("text-2xl font-bold text-shop_btn_dark_green capitalize tracking-wide font-sans", className)}>{children}</h2>
+        <h2 className={cn("text-xl md:text-2xl font-bold text-dark_brownish tracking-wide ", className)}>{children}</h2>
     )
 }
 
 const SubTitle = ({children, className} : {children: React.ReactNode, className?: string}) => {
     return (
-        <h3 className={cn("font-semibold text-gray-900 font-sans", className)}>{children}</h3>
+        <h3 className={cn("text-gray-900 font-bold", className)}>{children}</h3>
     )
 }
 

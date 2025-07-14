@@ -3,33 +3,34 @@ import { Button } from "./ui/button";
 import { Minus, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import toast from "react-hot-toast";
-import { Product } from "../../sanity.types";
 import useStore from "../../store";
+import { Product, ProductVariant } from "@/constants/types";
 
 interface Props {
   product: Product;
+  variant: ProductVariant;
   className?: string;
 }
-const QuantityButtons = ({ product, className }: Props) => {
+const QuantityButtons = ({ product,variant, className }: Props) => {
   const { addItem, removeItem, getItemCount } = useStore();
-  const itemCount = getItemCount(product?._id);
-  const isOutOfStock = product?.stock === 0;
+  const itemCount = getItemCount(variant?.id);
+  const isOutOfStock = variant?.inventoryitems === 0;
 
   const handleRemoveProduct = () => {
-    removeItem(product?._id);
+    removeItem(variant?.id);
     if (itemCount > 1) {
-      toast.success("Quantity Decreased successfully!");
+      toast.success("Đã giảm số lượng!");
     } else {
-      toast.success(`${product?.name?.substring(0, 12)} removed successfully!`);
+      toast.success(`${product?.name?.substring(0, 12)} xóa thành công!`);
     }
   };
 
   const handleAddToCart = () => {
-    if ((product?.stock as number) > itemCount) {
-      addItem(product);
-      toast.success("Quantity Increased successfully!");
+    if ((variant?.inventoryitems as number) > itemCount) {
+      addItem(product, variant);
+      toast.success("Đã tăng số lượng!");
     } else {
-      toast.error("Can not add more than available stock");
+      toast.error("Không thể tăng số lượng!");
     }
   };
 
