@@ -35,7 +35,7 @@ const HomeBlog = () => {
             <CarouselContent>
               {blogs.map((blog, subIdx) => (
                 <CarouselItem key={subIdx} data-aos="fade-up" data-aos-delay={(subIdx + 1) * 100} className="basis-1/2 md:basis-1/4">
-                  <BlogCard blog={blog} />
+                  <BlogCard blog={blog} type="home" />
                 </CarouselItem>
               ))}
             </CarouselContent>
