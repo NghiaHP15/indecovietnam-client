@@ -1,4 +1,52 @@
-import { OrderStatus, PaymentMethod, ProductStatus } from "./enum";
+import { OrderStatus, PaymentMethod, PaymentStatus, ProductStatus, TypeGallery } from "./enum";
+
+export interface User {
+  id: string;
+  email: string;
+  phone?: string;
+  firstname: string;
+  lastname: string;
+  avatar: string | null;
+  provider: string;
+}
+
+export interface UserInfor {
+  id: string;
+  email: string;
+  phone: string;
+  firstname: string;
+  lastname: string;
+  gender: string;
+  date_of_birth: string;
+  avatar: string | null;
+  level: string;
+}
+
+export interface Customer {
+  id: string;
+  email: string;
+  phone: string;
+  firstname: string;
+  lastname: string;
+  gender: string;
+  date_of_birth: string;
+  avatar: string | null;
+  level: string;
+  addressese: Address[];
+  orders: Order[];
+}
+
+export interface Login {
+  email: string;
+  password: string;
+}
+
+export interface Register {
+  email: string;
+  password: string;
+  firstname: string;
+  lastname: string;
+}
 
 export interface ContactItemData {
     title: string;
@@ -6,29 +54,26 @@ export interface ContactItemData {
     icon: React.ReactNode;
 }
 
-export interface ProductVariant {
-  id: string;
-  sku: string;
-  image: string; 
-  color: string;
-  size: string;
-  show: boolean;
-  material: string;
-  price: number;
-  discount: number;
-  is_active: boolean; 
-  inventoryitems: number;
-}
-
-export interface SubCategoryProduct {
-  title: string;
-  slug: string;
-}
-
 export interface CategoryProduct {
+  id: string;
   title: string;
   slug: string;
-  subCategory: SubCategoryProduct;
+  image: string;
+  roomCategory: RoomCategory;
+  
+}
+
+export interface RoomCategory {
+  title: string;
+  slug: string;
+  image: string;
+  
+}
+
+export interface Color {
+  id: string;
+  name: string;
+  code: string;
 }
 
 export interface Product {
@@ -39,9 +84,27 @@ export interface Product {
   description: string;
   status: ProductStatus 
   featured: boolean; 
+  min_price: number;
+  max_price: number;
   body: string;
   variants: ProductVariant[];
-  category: CategoryProduct;
+  productCategory: CategoryProduct;
+}
+
+export interface ProductVariant {
+  id: string;
+  sku: string;
+  image: string; 
+  color: {
+    id: string;
+    name: string;
+    code: string;
+  };
+  size: string;
+  price: number;
+  discount: number;
+  is_active: boolean; 
+  quatity: number;
 }
 
 export interface CartItem {
@@ -56,65 +119,118 @@ export interface FavoriteItem {
 }
 
 export interface OrderItem {
-  product_id: string;
-  product_name: string;
-  variant_id: string;
-  sku: string;
-  image: string | null;
-  color: string;
-  size: string;
-  quantity: number;
-  unit_price: number;
-  discount: number;
+  id: string;
+  name: string;
   total_price: number;
+  quantity: number;
+  product_variant: ProductVariant;
 }
 
 export interface Order {
-  customer_id: string;
+  id: string;
+  txnRef: string;
   order_date: string;
-  status: OrderStatus;
-  shipping_address: string;
-  payment_method: PaymentMethod;
-  items: OrderItem[];
+  status?: OrderStatus;
+  payment_status?: PaymentStatus;
   total_amount: number;
+  address: string;
   note?: string;
+  paymentmethod?: PaymentMethod;
+  customer: User;
+  products: OrderItem[];
 }
 
 export interface CategoryBlog {
+  id: string;
   title: string;
   slug: string;
+  description?: string;
 }
 
 export interface Blog {
   id: string,
   title: string,
   slug: string,
-  description: string,
-  author: string,
   image: string | null,
-  blogCategories: CategoryBlog,
-  publishedAt: string,
-  latestBlog: boolean,
-  tags: string[],
+  description: string,
+  latest_blog: boolean,
+  author: {
+    id: string,
+    fullname: string
+  },
+  category: {
+    id: string,
+    title: string,
+    slug: string
+  },
+  published_at: string,
+  tag: string[],
   body: string | null,
 }
 
-export interface FeebBack {
-  id: string,
-  name: string,
-  email?: string,
-  phone?: string,
-  address: string,
-  message: string,
-  avatar: string | null,
+export interface CategoryService {
+  id: string;
+  title: string;
+  slug: string;
+  description?: string;
 }
 
-export interface Address {
+export interface Service {
   id: string,
-  receiverName: string,
-  addressLine: string,
+  title: string,
+  slug: string,
+  image: string | null,
+  description: string,
+  category: {
+    id: string,
+    title: string,
+    slug: string
+  },
+  published_at: string,
+  tag: string[],
+  body: string | null,
+}
+
+
+export interface Address {
+  id?: string,
+  receiver_name: string,
+  address_line: string,
   ward: string,
   district: string,
   city: string,
-  isDefault: boolean
+  default: boolean
+}
+
+export interface Gallery {
+  id: string,
+  title: string,
+  href?: string,
+  description?: string,
+  image: string,
+  type: TypeGallery
+}
+
+export interface Filter {
+  category: string | null;
+  color: string | null;
+  size: string | null;
+  price: string | null;
+}
+
+export interface Payment {
+  id: string,
+  name: string,
+  image: string,
+  description: string,
+  active: boolean
+}
+
+export interface Feedback {
+  id?: string,
+  name: string,
+  email: string,
+  phone: string,
+  subject: string,
+  message: string
 }

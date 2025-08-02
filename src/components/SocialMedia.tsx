@@ -1,7 +1,7 @@
 import React from "react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 import { socailLinks } from "@/constants/data";
-import { cn } from "@/lib/utils";
+import { cn } from "@/constants/utils";
 import Link from "next/link";
 
 interface SocialMediaProps {

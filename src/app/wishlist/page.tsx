@@ -1,16 +1,19 @@
-// import NoAccess from "@/components/NoAccess";
+"use client";
+import NoAccess from "@/components/NoAccess";
 import WishListProducts from "@/components/WishListProduct";
 import React from "react";
+import useStore from "../../../store";
 
-const WishListPage = async () => {
-    // const use = await currentUser();
+const WishListPage = () => {
+    const { user } = useStore();
+
     return (
         <>
-            {/* {use ? ( */}
+            {user?.id ? (
                 <WishListProducts />
-            {/* ) : (
-                <NoAccess details="Log in to view your wishlist items. Don't miss out on your favorite products!" />
-            )} */}
+            ) : (
+                <NoAccess details="Vui lòng đang nhập để xem danh sách yêu thích" />
+            )} 
         </>
     );
 };

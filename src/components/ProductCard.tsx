@@ -1,53 +1,85 @@
 import Image from "next/image";
-import React from "react";
 import Link from "next/link";
+import React from "react";
 import { Product } from "@/constants/types";
 import { ProductStatus } from "@/constants/enum";
-import PriceView from "./PriceView";
+import PriceFormatter from "./PriceFormatter";
 import ProductSideMenu from "./ProductSideMenu";
 
-const ProductCard = ({ product, basic = false } : { product: Product, basic?: boolean }) => {
+const ProductCard = ({ product, basic = false }: { product: Product; basic?: boolean }) => {
 
-  const productVariant = product?.variants.find((item) => item.show === true);
-  
+  const getBadgeColor = () => {
+    switch (product?.status) {
+      case ProductStatus.HOT:
+        return "bg-dark_brownish";
+      case ProductStatus.NEW:
+        return "bg-light_brownish";
+      default:
+        return "bg-red-500/70";
+    }
+  };
+
   return (
-    <>
-    <div className={`text-sm group p-3 ${!basic && "hover:bg-white hover:shadow-[0_7px_20px_rgba(0,0,0,.05)] hover:scale-105"} hoverEffect`}>
-      <div className="relative  ">
+    <div
+      className={`text-sm group p-3 hoverEffect ${
+        !basic && "hover:bg-white hover:shadow-[0_7px_20px_rgba(0,0,0,.05)] hover:scale-105"
+      }`}
+    >
+      <div className="relative">
         {product?.image && (
-          <div className={`shadow-[0_7px_20px_rgba(0,0,0,.05)] ${!basic && "group-hover:shadow-none"} hoverEffect`}>
-            <Link href={`/product/${product?.slug}`} className="relative">
+          <div
+            className={`shadow-[0_7px_20px_rgba(0,0,0,.05)] hoverEffect ${
+              !basic && "group-hover:shadow-none"
+            }`}
+          >
+            <Link href={`/product/${product?.slug}`} className="relative block">
               <Image
-                src={productVariant?.image || product?.image}
-                alt="productImage"
+                src={product.image}
+                alt={product.name}
                 width={400}
                 height={600}
                 priority
-                className={`w-full h-auto object-contain`}
+                className="w-full h-auto object-contain"
               />
-              <div className={`${product?.status === ProductStatus.HOT ? "bg-dark_brownish" : product?.status === ProductStatus.NEW ? "bg-light_brownish" : "bg-red-500/70"} absolute opacity-0 group-hover:opacity-100 group-hover:left-3 left-0 top-3 z-10 text-xs text-white px-3 py-1 rounded-[2px] hoverEffect`}>{product?.status === ProductStatus.HOT ? "Hot" : product?.status === ProductStatus.NEW ? "New" : "Sale"}</div>
+              <div
+                className={`${getBadgeColor()} absolute left-0 top-3 z-10 px-3 py-1 text-xs text-white rounded-[2px] opacity-0 group-hover:opacity-100 group-hover:left-3 hoverEffect`}
+              >
+                {product.status === ProductStatus.HOT
+                  ? "Hot"
+                  : product.status === ProductStatus.NEW
+                  ? "New"
+                  : "Sale"}
+              </div>
             </Link>
           </div>
         )}
-        <ProductSideMenu product={product} variant={product?.variants[0]} className="opacity-0 group-hover:opacity-100 group-hover:right-3 hoverEffect" />
+
+        <ProductSideMenu
+          product={product}
+          variant={product.variants.find((v) => v.price === product.min_price) || product.variants[0]}
+          className="opacity-0 group-hover:opacity-100 group-hover:right-3 hoverEffect"
+        />
       </div>
+
       <div className="p-3 flex flex-col gap-1">
-        <Link href={`/product/${product?.slug}`} >
+        <Link href={`/product/${product?.slug}`}>
           <h3 className="text-base text-darkColor">{product.name}</h3>
         </Link>
-        <div className=" relative h-6 overflow-hidden ">
-          <div className="opacity-100 absolute top-0 group-hover:opacity-0 group-hover:top-[-20px] hoverEffect">
-            <PriceView
-              price={productVariant?.price || product.variants[0].price}
-              discount={productVariant?.discount || product.variants[0].discount}
-              className="text-sm"
-            />
+
+        <div className="relative h-6 overflow-hidden">
+          <div className="absolute top-0 flex gap-2 items-center opacity-100 group-hover:opacity-0 group-hover:-top-5 hoverEffect">
+            <PriceFormatter amount={product?.min_price} className="text-base text-darkColor" />
           </div>
-          <Link href={`/product/${product?.slug}`} className={`absolute top-0 underline underline-offset-2 opacity-0 group-hover:opacity-100 group-hover:top-0 hoverEffect`}>Mua sản phẩm</Link>
+
+          <Link
+            href={`/product/${product?.slug}`}
+            className="absolute top-0 opacity-0 text-base group-hover:opacity-100 group-hover:top-0 underline underline-offset-2 hoverEffect"
+          >
+            Mua sản phẩm
+          </Link>
         </div>
       </div>
     </div>
-    </>
   );
 };
 

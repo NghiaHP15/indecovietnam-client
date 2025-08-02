@@ -12,25 +12,44 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { Blog } from "@/constants/types";
-import { blogData } from "@/constants/data";
+import { Blog, CategoryBlog } from "@/constants/types";
+import { getAllBlogCategory, getAllBlogs } from "@/services/blogService";
+import SideBarCategory from "./SideBarCategory";
+import SideBarLatest from "./SideBarLatest";
 
 const ITEMS_PER_PAGE = 9;
 
-const BlogView = ({ slug }: { slug?: string }) => {
-  const [data, setData] = useState<Blog[]>(blogData);
+const BlogView = ({ category }: { category?: string }) => {
+  const [data, setData] = useState<Blog[]>([]);
+  const [blogs, setBlogs] = useState<Blog[]>([]);
+  const [categories, setCategories] = useState<CategoryBlog[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
 
   // Cập nhật data theo slug và reset trang
   useEffect(() => {
-    if (slug) {
-      const filtered = blogData.filter((item) => item.blogCategories?.slug === slug);
-      setData(filtered);
-    } else {
-      setData(blogData);
-    }
-    setCurrentPage(1); // Reset lại trang mỗi khi slug đổi
-  }, [slug]);
+    const fetchData = async () => {
+      try {
+        const [blogsRes, categoriesRes, latestRes] = await Promise.all([
+          getAllBlogs({ params: { limit: 100 } }),
+          getAllBlogCategory(),
+          getAllBlogs({ params: { limit: 8, latest_blog: true } }),
+        ]);
+
+        if (blogsRes.data.success) {
+          const allBlogs = blogsRes.data.data;
+          setData(category ? allBlogs.filter((b: Blog) => b.category?.slug === category) : allBlogs);
+        }
+        if (categoriesRes.data.success) setCategories(categoriesRes.data.data);
+        if (latestRes.data.success) setBlogs(latestRes.data.data);
+
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchData();
+    setCurrentPage(1);
+  }, [category]);
 
   const totalItems = data.length;
   const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
@@ -46,10 +65,10 @@ const BlogView = ({ slug }: { slug?: string }) => {
 
   // Lấy tiêu đề chuyên mục nếu có slug
   const categoryTitle = useMemo(() => {
-    if (!slug) return "Danh sách bài viết";
-    const found = blogData.find((item) => item.blogCategories?.slug === slug);
-    return found?.blogCategories?.title ?? "Danh sách bài viết";
-  }, [slug]);
+    if (!category) return "Danh sách bài viết";
+    const found = data.find((item) => item.category?.slug === category);
+    return found?.category?.title ?? "Danh sách bài viết";
+  }, [category, data]);
 
   return (
     <>
@@ -59,10 +78,16 @@ const BlogView = ({ slug }: { slug?: string }) => {
       />
       <div className="py-10">
         <Container>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {currentData.map((item) => (
-              <BlogCard key={item.id} blog={item} />
-            ))}
+          <div className="grid grid-cols-1 md:grid-cols-7 gap-6">
+            <div className="col-span-7 md:col-span-5 space-y-6">
+              {currentData.map((item) => (
+                  <BlogCard key={item.id} blog={item} />
+                ))}
+              </div>
+            <div className="col-span-7 md:col-span-2">
+              <SideBarCategory title="Danh mục bài viết" data={categories} />
+              <SideBarLatest title="Bài viết mới nhất" data={blogs} />
+            </div>
           </div>
 
           {/* Pagination */}

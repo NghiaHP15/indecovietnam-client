@@ -3,17 +3,20 @@ import React, { useEffect, useState } from "react";
 import Container from "./Container";
 import Logo from "./Logo";
 import HeaderMenu from "./HeaderMenu";
-import SearchBar from "./SearchBar";
+// import SearchBar from "./SearchBar";
 import Cart from "./Cart";
 import MobiMenu from "./MobiMenu";
 import FavoriteButton from "./FavoriteButton";
 import UserButton from "./UserButton";
+import useStore from "../../store";
+import Link from "next/link";
 // import FavoriteButton from "./FavoriteButton";
 
 const Header:React.FC = () => {
     const [showHeader, setShowHeader] = useState(true);
     const [lastScrollY, setLastScrollY] = useState(0);
     const [isAtTop, setIsAtTop] = useState(true);
+    const { user } = useStore();
 
     useEffect(() => {
         const handleScroll = () => {
@@ -43,10 +46,14 @@ const Header:React.FC = () => {
                 </div>
                 <HeaderMenu />
                 <div className="w-auto flex items-center justify-end gap-5">
-                    <SearchBar />
+                    {/* <SearchBar /> */}
                     <Cart />
                     <FavoriteButton />
+                    {user?.id ? 
                     <UserButton/>
+                    :
+                    <Link href="/login" className="text-darkColor p-2 rounded-sm hover:text-light_brownish">Đăng nhập/ Đăng ký</Link>
+                    }
                 </div>
             </Container>
         </header>

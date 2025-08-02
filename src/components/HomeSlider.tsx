@@ -1,91 +1,32 @@
 'use client';
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import slide1 from "@/images/data/banner/slide1.jpg"
-import slide2 from "@/images/data/banner/slide2.jpg"
-import slide3 from "@/images/data/banner/slide3.jpg"
-import slide4 from "@/images/data/banner/slide4.jpg"
-import slide5 from "@/images/data/banner/slide5.jpg"
 import { AnimatePresence, motion } from "motion/react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Progress } from "./ui/progress";
-interface ItemSlider {
-    bg: string
-    title: string,
-    name: string,
-    des: string,
-    button: string
-} 
-
-const sliderData = [
-  {
-    bg: slide1.src,
-    name: 'Phòng khách hiện đại',
-    title: 'LUNDEV Interiors',
-    des: 'Tận hưởng không gian sống tinh tế với sofa cao cấp và thiết kế tối giản đậm chất châu Âu.',
-    button: 'Khám phá ngay'
-  },
-  {
-    bg: slide2.src,
-    name: 'Phòng ngủ ấm cúng',
-    title: 'LUNDEV Bedroom',
-    des: 'Giấc ngủ trọn vẹn trong căn phòng được thiết kế với ánh sáng dịu nhẹ và nội thất gỗ tự nhiên.',
-    button: 'Xem chi tiết'
-  },
-  {
-    bg: slide3.src,
-    name: 'Bếp mở hiện đại',
-    title: 'LUNDEV Kitchen',
-    des: 'Thiết kế bếp mở kết hợp đảo bếp tiện nghi, tạo nên điểm nhấn cho ngôi nhà hiện đại.',
-    button: 'Tìm hiểu thêm'
-  },
-  {
-    bg: slide4.src,
-    name: 'Phòng làm việc sang trọng',
-    title: 'LUNDEV Office',
-    des: 'Không gian làm việc đẳng cấp với bàn gỗ óc chó và ghế da cao cấp, nâng tầm hiệu suất.',
-    button: 'Khám phá thiết kế'
-  },
-  {
-    bg: slide5.src,
-    name: 'Nội thất căn hộ thông minh',
-    title: 'LUNDEV Smart Home',
-    des: 'Kết hợp công nghệ thông minh với thiết kế nội thất hiện đại cho trải nghiệm sống tiện nghi.',
-    button: 'Đặt thiết kế ngay'
-  },
-  {
-    bg: slide1.src,
-    name: 'Không gian thư giãn',
-    title: 'LUNDEV Lounge',
-    des: 'Tạo góc thư giãn lý tưởng với ghế bành êm ái và đèn trang trí phong cách Bắc Âu.',
-    button: 'Xem gợi ý'
-  },
-  {
-    bg: slide2.src,
-    name: 'Thiết kế tối giản',
-    title: 'LUNDEV Minimal',
-    des: 'Tinh gọn không gian sống bằng nội thất tối giản, đầy đủ công năng và tính thẩm mỹ.',
-    button: 'Khám phá phong cách'
-  }
-]
+import { getAllGallery } from "@/services/galleryService";
+import { TypeGallery } from "@/constants/enum";
+import { Gallery } from "@/constants/types";
+import Link from "next/link";
 
 const HomeSlider = () => {
     const [mounted, setMounted] = useState(false);
-    const [data, ] = useState<ItemSlider[]>(sliderData);
+    const [data, setData] = useState<Gallery[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
     const slideRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        setMounted(true);
+        fetchData();
     }, []);
-
 
     useEffect(() => {
-        startAutoSlide();
-        return () => stopAutoSlide();
+        if (data.length > 0) {
+            startAutoSlide();
+            return () => stopAutoSlide();
+        }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [data]);
 
     useEffect(() => {
         // reset lại mỗi khi currentIndex thay đổi
@@ -94,13 +35,25 @@ const HomeSlider = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentIndex]);
 
+    const fetchData = async () => {
+        try {
+            const res = await getAllGallery({ params: { type: TypeGallery.SLIDER } });
+            if(res.data.success){
+                setData(res.data.data);
+                setMounted(true);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     const startAutoSlide = useCallback(() => {
         stopAutoSlide(); // clear nếu đã có
         intervalRef.current = setInterval(() => {
             handleNext();
         }, 5000);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [data]);
 
     const stopAutoSlide = useCallback(() => {
         if (intervalRef.current) {
@@ -109,12 +62,14 @@ const HomeSlider = () => {
     }, []);
 
     const handleNext = useCallback(() => {
-        const list = slideRef.current?.querySelectorAll('.item');
-        if (list && list.length > 0) {
-        slideRef.current?.appendChild(list[0]);
-        setCurrentIndex((prev) => (prev + 1) % data.length);
-        }
-    },[data.length]);
+        if (data.length > 0){
+            const list = slideRef.current?.querySelectorAll('.item');
+            if (list && list.length > 0) {
+            slideRef.current?.appendChild(list[0]);
+            setCurrentIndex((prev) => (prev + 1) % data.length);
+            }
+        };
+    },[data]);
 
     const handlePrev = useCallback(() => {
         const list = slideRef.current?.querySelectorAll('.item');
@@ -122,7 +77,7 @@ const HomeSlider = () => {
         slideRef.current?.prepend(list[list.length - 1]);
         setCurrentIndex((prev) => (prev - 1 + data.length) % data.length);
         }
-    },[data.length]);
+    },[data]);
 
     if (!mounted) return null; 
 
@@ -140,7 +95,7 @@ const HomeSlider = () => {
                         key={index} 
                         className="item w-[200px] h-[300px] rounded-xl"
                         style={{
-                            backgroundImage: `url(${item.bg})`,
+                            backgroundImage: `url(${item.image})`,
                             backgroundSize: 'cover',
                             backgroundRepeat: 'no-repeat',
                             backgroundPosition: 'center',
@@ -148,11 +103,11 @@ const HomeSlider = () => {
                     >
                         <div className="content relative z-2 flex flex-col gap-2 h-full justify-end p-4 text-white">
                             <span className="top border-b border-white w-3"></span>
-                            <span className="name text-sm line-clamp-1 tracking-tighter text-shadow-lg">{item.name}</span>
-                            <h3 className="title text-2xl font-semibold line-clamp-2 tracking-tighter leading-[0.9] text-shadow-lg">{item.title}</h3>
-                            <span className="des hidden tracking-wide leading-[1] text-shadow-lg">{item.des}</span>
+                            <span className="name text-sm line-clamp-1 tracking-tighter text-shadow-lg">Nối sống hiện đại với Indeco VietNam</span>
+                            <h3 className="title text-xl font-semibold line-clamp-1 tracking-tighter leading-[0.9] text-shadow-lg">{item.title}</h3>
+                            <span className="des hidden tracking-wide leading-[1] text-shadow-lg">{item.description}</span>
                             <span className="btn hidden relative overflow-hidden py-2 mt-4 w-[100px] md:w-[150px] items-center justify-center text-sm font-semibold border rounded-3xl border-white shadow-md group">
-                                <span className="relative text-sm md:text-base z-10 text-white text-shadow-lg">Xem thêm</span>
+                                <Link href={item.href || "/"} className="relative text-sm md:text-base z-10 text-white text-shadow-lg">Xem thêm</Link>
                                 <div className="absolute inset-0 bg-btn_light_brownish/50 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-in-out z-0" />
                             </span>
                         </div>

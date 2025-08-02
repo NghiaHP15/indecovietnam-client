@@ -1,5 +1,5 @@
 "use client";
-import { cn } from "@/lib/utils";
+import { cn } from "@/constants/utils";
 import { Product, ProductVariant } from "@/constants/types";
 import useStore from "../../store";
 import toast from "react-hot-toast";
@@ -16,10 +16,10 @@ const AddToCartButton = ({ product, variant, className }: Props) => {
   
   const { addItem, getItemCount } = useStore();
   const itemCount = getItemCount(variant?.id);
-  const isOutOfStock = variant?.inventoryitems === 0;
+  const isOutOfStock = variant?.quatity === 0;
 
   const handleAddToCart = () => {
-    if ((variant?.inventoryitems as number) > itemCount) {
+    if ((variant?.quatity as number) > itemCount) {
       addItem(product, variant);
       toast.success(
         `${product?.name?.substring(0, 12)}... Thêm thành công!`

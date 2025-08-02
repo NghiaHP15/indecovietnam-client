@@ -7,7 +7,7 @@ import Image from "next/image";
 
 export default function EmptyCart() {
   return (
-    <div className="py-10 md:py-20 bg-gradient-to-b from-light_brownish/10 to-white flex items-center justify-center p-4">
+    <div className="py-10 md:py-20 flex items-center justify-center p-4">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -50,19 +50,19 @@ export default function EmptyCart() {
         </motion.div>
 
         <div className="text-center space-y-4">
-          <h2 className="text-3xl font-bold text-gray-800">
-            Giỏ hàng của bạn đang trống
+          <h2 className="text-2xl font-bold text-gray-800">
+            Danh sách của bạn đang trống
           </h2>
           <p className="text-gray-600">
-            Có vẻ như bạn chưa thêm bất kỳ sản phẩm nào vào giỏ hàng.
+            Có vẻ như bạn chưa thêm bất kỳ sản phẩm nào.
             Hãy thay đổi điều đó và tìm cho bạn những sản phẩm tuyệt vời!
           </p>
         </div>
 
         <div>
           <Link
-            href="/"
-            className="block bg-darkColor/5 border border-darkColor/20 text-center py-2.5 rounded-full text-sm font-semibold tracking-wide hover:border-darkColor hover:bg-darkColor hover:text-white hoverEffect"
+            href="/product"
+            className="block bg-dark_brownish/5 border border-dark_brownish/20 text-center py-2.5 rounded-full text-sm font-semibold tracking-wide hover:border-dark_brownish hover:bg-dark_brownish hover:text-white hoverEffect"
           >
             Mua sản phẩm
           </Link>

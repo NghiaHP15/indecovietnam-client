@@ -1,16 +1,57 @@
+"use client";
+
 import Breakcrum from "@/components/Breakcrum";
 import Container from "@/components/Container";
 import FeedBackCard from "@/components/FeedBackCard";
 import SocialMedia from "@/components/SocialMedia";
+import { Button } from "@/components/ui/button";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
+import { Dialog, DialogContent, DialogTitle} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { feedbackData } from "@/constants/data";
-import React from "react";
+import { Feedback } from "@/constants/types";
+import { check } from "@/images";
+import { createFeedback, getAllFeedback } from "@/services/feedbackService";
+import Image from "next/image";
+import React, { useCallback, useEffect, useState } from "react";
+
+const dataDefault = { name: "", email: "", phone: "", subject: "", message: "" }
 
 const ContactPage = () => {
+  const [open, setOpen] = useState(false);
+  const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState<Feedback>(dataDefault);
 
-  const feedback = feedbackData;
+  useEffect(() => {
+    const fetchFeedbacks = async () => {
+      try {
+        const res = await getAllFeedback({ params: { limit: 5, show: true } });
+        if (res.data.success) {
+          setFeedbacks(res.data.data);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchFeedbacks();
+  },[]) 
+
+  const handleSubmit = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try{
+      setLoading(true);
+      const res = await createFeedback(data);
+      if(res.data.success){
+        setOpen(true);
+        setData(dataDefault);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  },[data]);
 
   return (
     <div 
@@ -50,14 +91,14 @@ const ContactPage = () => {
               </div>
               <div className="col-span-2 md:col-span-1 flex flex-col gap-4" data-aos="fade-left" data-aos-delay="200">
                 <h2 className="text-dark_brownish text-lg">Gửi thông tin</h2>
-                <form action="" className="grid grid-cols-2 gap-3">
-                  <Input type="name" placeholder="Họ tên" className="col-span-2" />
-                  <Input type="email" placeholder="Email" className="col-span-1" />
-                  <Input type="phone" placeholder="Số điện thoại" className="col-span-1" />
-                  <Input type="address" placeholder="Địa chỉ" className="col-span-2" />
-                  <Textarea placeholder="Thông tin ghi chú." className="col-span-2" />
-                  <button type="submit" className="px-3 py-2 bg-light_brownish hover:bg-dark_brownish hoverEffect text-white rounded-[2px]">Gửi thông tin</button>
-                </form>
+                <form action="" onSubmit={handleSubmit} className="grid grid-cols-2 gap-3">
+                  <Input value={data.name} required onChange={(e) => setData({ ...data, name: e.target.value })} type="name" placeholder="Họ tên" className="col-span-2" />
+                  <Input value={data.email} required onChange={(e) => setData({ ...data, email: e.target.value })} type="email" placeholder="Email" className="col-span-1" />
+                  <Input value={data.phone} required onChange={(e) => setData({ ...data, phone: e.target.value })} type="phone" placeholder="Số điện thoại" className="col-span-1" />
+                  <Input value={data.subject} required onChange={(e) => setData({ ...data, subject: e.target.value })} type="address" placeholder="Tiêu đề" className="col-span-2" />
+                  <Textarea value={data.message} required onChange={(e) => setData({ ...data, message: e.target.value })} placeholder="Thông tin gửi." className="col-span-2" />
+                  <Button type="submit" isLoading={loading} className="px-3 py-2 bg-light_brownish hover:bg-dark_brownish hoverEffect text-white rounded-[2px]">Gửi thông tin</Button>           
+                  </form>
               </div>
             </div>
         </Container>
@@ -76,7 +117,7 @@ const ContactPage = () => {
             <div className="grid grid-cols-3" data-aos="fade-left" data-aos-delay="400">
               <Carousel className="w-[450px]">
                 <CarouselContent>
-                {feedback.map((item, index) => (
+                {feedbacks.map((item, index) => (
                   <CarouselItem key={index}>
                     <FeedBackCard key={index} data={item} />
                   </CarouselItem>
@@ -87,6 +128,22 @@ const ContactPage = () => {
           </Container>
         </div>
       </div>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="max-w-[600px]">
+          <DialogTitle className="sr-only">Phản hồi thành công</DialogTitle> {/* ✅ thêm tiêu đề */}
+          <div className="flex flex-col items-center justify-center gap-4">
+            <Image
+              src={check}
+              alt="check"
+              width={100}
+              height={100}
+              className="mx-auto"
+            />
+            <h3 className="text-center text-xl font-medium text-green-900">Bạn đã phản hồi thành công</h3>
+            <p className="text-center">Chúng tôi đã tiếp nhận phản hồi của bạn, <br />Chúng tôi sẽ phản hồi quý khách trong thời gian sớm nhất.</p>
+          </div>
+        </DialogContent>
+      </Dialog>     
     </div>
   );
 };

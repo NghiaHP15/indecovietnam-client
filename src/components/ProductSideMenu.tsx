@@ -1,6 +1,6 @@
 "use client";
 import { FavoriteItem, Product, ProductVariant } from "@/constants/types";
-import { cn } from "@/lib/utils";
+import { cn } from "@/constants/utils";
 import { Heart } from "lucide-react";
 import useStore from "../../store";
 import { useEffect, useState } from "react";
@@ -43,7 +43,7 @@ const ProductSideMenu = ({ product, variant, className }: Props) => {
     >
       <div
         onClick={handleFavorite}
-        className={`p-3 rounded-full shadow-[0_7px_20px_rgba(0,0,0,.07)] hover:bg-dark_brownish/80 hover:text-white hoverEffect  ${existingProduct ? "bg-dark_brownish/80 text-white" : "bg-lightColor/10"}`}
+        className={`p-2 md:p-3 rounded-full shadow-[0_7px_20px_rgba(0,0,0,.07)] hover:bg-dark_brownish/80 hover:text-white hoverEffect  ${existingProduct ? "bg-dark_brownish/80 text-white" : "bg-lightColor/10"}`}
       >
         <Heart size={15} />
       </div>

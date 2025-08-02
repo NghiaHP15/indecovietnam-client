@@ -9,6 +9,7 @@ import "yet-another-react-lightbox/plugins/thumbnails.css";
 
 import { Carousel, CarouselContent, CarouselItem } from "./ui/carousel";
 import ImageWapper from "./ImageWapper";
+import { emptyImage } from "@/images";
 
 interface ImageViewProps {
   images: string[] ;
@@ -48,7 +49,7 @@ export default function ImageView({ images, is_active }: ImageViewProps) {
             onClick={handlePreviewClick}
           >
             <Image
-              src={active}
+              src={active || emptyImage}
               alt="productImage"
               width={700}
               height={700}
@@ -72,7 +73,7 @@ export default function ImageView({ images, is_active }: ImageViewProps) {
                       alt={`Thumbnail ${i}`}
                       width={80}
                       height={100}
-                      className="w-full h-auto object-contain relative z-0"
+                      className="w-[80px] md:w-full h-auto object-contain relative z-0"
                     />
                     {image === active && (
                       <div className="absolute inset-0 bg-black/40 z-10 border border-primary" />

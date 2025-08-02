@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils"
+import { cn } from "@/constants/utils"
 
 const Title = ({children, className} : {children: React.ReactNode, className?: string}) => {
     return (

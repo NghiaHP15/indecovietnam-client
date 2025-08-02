@@ -1,13 +1,30 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import { Title } from "./ui/text";
 import Container from "./Container";
 import { Carousel, CarouselContent, CarouselItem } from "./ui/carousel";
-import { categoryProduct } from "@/constants/data";
 import ItemImage from "./ItemImage";
-
-
+import { RoomCategory } from "@/constants/types";
+import { getAllRooms } from "@/services/roomCategoryService";
 
 const HomeCategories = () => {
+  const [data, setData] = useState<RoomCategory[]>([]);
+
+  useEffect(() => {
+    fetchRoomCategory();
+  }, []);
+
+  const fetchRoomCategory = async () => {
+    try {
+      const res = await getAllRooms();
+      if (res.data.success) {
+        setData(res.data.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
     <div className="py-10">
       <Container>
@@ -17,9 +34,9 @@ const HomeCategories = () => {
         </div>
         <Carousel data-aos="fade-up">
           <CarouselContent>
-            {categoryProduct.map((item, subIdx) => (
+            {data.map((item: RoomCategory, subIdx) => (
               <CarouselItem  data-aos="fade-up" data-aos-delay={(subIdx + 1) * 100} key={subIdx} className="basis-1/2 md:basis-1/4">
-                <ItemImage item={item} className="h-[400px] w-full rounded-2xl"  />
+                <ItemImage item={item} className="h-[400px] w-full rounded-2xl" href={`/product?room=${item.slug}`}  />
               </CarouselItem>
             ))}
           </CarouselContent>

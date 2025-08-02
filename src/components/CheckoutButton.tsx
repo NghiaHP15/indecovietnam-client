@@ -1,5 +1,5 @@
 "use client";
-import { cn } from "@/lib/utils";
+import { cn } from "@/constants/utils";
 import React from "react";
 import { useRouter } from 'next/navigation';
 import { Product, ProductVariant } from "@/constants/types";
@@ -13,12 +13,15 @@ interface Props {
 
 const CheckoutButton = ({ product, variant, className }: Props) => {
 
-    const { addItem } = useStore();
+    const { items, addItem } = useStore();
+    console.log(items);
+    
     const router = useRouter();
-    const isOutOfStock = variant?.inventoryitems === 0;
+    const isOutOfStock = variant?.quatity === 0;
 
     const handleCheckout = () => {
-        addItem(product, variant);
+        const check = items.find((item) => item.variant.id === variant.id);
+        if(!check) addItem(product, variant);
         router.push('/checkout'); 
     };
     

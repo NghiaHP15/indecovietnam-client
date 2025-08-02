@@ -1,15 +1,10 @@
+import { RoomCategory } from "@/constants/types";
 import Link from "next/link";
 
-interface ItemProps {
-  href: string;
-  title: string;
-  image: string;
-  className?: string;
-}
+const CardItem = ({ item, className = "", href = "/" }: { item: RoomCategory; className?: string, href?: string }) => {
 
-const CardItem = ({ item, className = "" }: { item: ItemProps; className?: string }) => {
   return (
-    <Link href={item.href} className="block">
+    <Link href={href} className="block">
       <div className={`${className} overflow-hidden relative group`}>
         <div 
             style={{

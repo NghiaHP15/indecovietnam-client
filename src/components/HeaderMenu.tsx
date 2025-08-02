@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import Link from "next/link";
 import {
   NavigationMenu,
@@ -10,7 +11,8 @@ import {
   NavigationMenuTrigger,
 } from "./ui/navigation-menu";
 import { Carousel, CarouselContent, CarouselItem } from "./ui/carousel";
-import { headerData } from "@/constants/data";
+import { getAllMenus } from "@/services/menuService";
+import { PositionMenu } from "@/constants/enum";
 
 export interface SubItem {
   title: string;
@@ -26,6 +28,23 @@ export interface CategoryItem {
 
 const HeaderMenu = () => {
   const [hoveredCategory, setHoveredCategory] = useState<CategoryItem | null>(null);
+  const [data, setData] = useState<any[]>([])
+
+  useEffect(() => {
+    fetchData();
+  },[])
+
+  const fetchData = async () => {
+    try {
+      const res = await getAllMenus();
+      if(res.data.success){
+        const header = res.data.data.find((item: any) => item.position === PositionMenu.HEADER);
+        setData(JSON.parse(header.item));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   const handleTriggerEnter = useCallback((title: string, defaultCategory?: CategoryItem) => {
     setHoveredCategory(defaultCategory ?? null);
@@ -34,7 +53,7 @@ const HeaderMenu = () => {
   return (
     <NavigationMenu viewport={false} className="hidden md:block">
       <NavigationMenuList className="flex items-center gap-7">
-        {headerData.map((item, index) => {
+        {data.map((item, index) => {
           const hasSubMenu = item.items && item.items.length > 0;
 
           if (hasSubMenu) {
@@ -53,13 +72,13 @@ const HeaderMenu = () => {
                   <div className="flex w-max gap-6">
                     {/* Submenu list */}
                     <ul className="flex flex-col gap-2 min-w-[200px]">
-                      {item.items?.map((category, catIndex) => (
+                      {item.items?.map((category: any, catIndex: number) => (
                         <li
                           key={catIndex}
                           className="px-2 py-2 text-md flex items-center justify-between rounded-[5px] cursor-pointer hover:bg-gray-100 hover:text-light_brownish hoverEffect"
                           onMouseEnter={() => setHoveredCategory(category)}
                         >
-                          <Link href={category.href}>{category.title}</Link>
+                          <Link href={category.href} className="w-full">{category.title}</Link>
                         </li>
                       ))}
                     </ul>

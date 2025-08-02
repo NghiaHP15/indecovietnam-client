@@ -1,5 +1,4 @@
 import Breakcrum from "@/components/Breakcrum";
-import CarouselGallery from "@/components/CarouselGallery";
 import Container from "@/components/Container";
 import Image from "next/image";
 import React from "react";
@@ -68,7 +67,6 @@ const AboutUs = () => {
                         </span>
                     </div>
                     <div data-aos="fade-up" data-aos-delay="400">
-                        <CarouselGallery/>
                     </div>
                 </div>
             </Container>

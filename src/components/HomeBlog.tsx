@@ -1,13 +1,28 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Title } from "./ui/text";
-import { blogData } from "@/constants/data";
 import Container from "./Container";
 import { Carousel, CarouselContent, CarouselItem } from "./ui/carousel";
 import BlogCard from "./BlogCard";
+import { getAllBlogs } from "@/services/blogService";
+import { Blog } from "@/constants/types";
 
 const HomeBlog = () => {
-  const [blogs, ] = useState(blogData);
+  const [blogs, setBlogs ] = useState<Blog[]>([])
+
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        const res = await getAllBlogs({ params: { limit: 8, latest_blog: true } });
+        if (res.data.success) {
+          setBlogs(res.data.data);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    fetchBlogs();
+  }, [])
 
   return (
     <div className="my-10">

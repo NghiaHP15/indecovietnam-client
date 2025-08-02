@@ -2,23 +2,39 @@
 import React, { useEffect, useState } from "react";
 import Container from "./Container";
 import Image from 'next/image'
-import { cn } from "@/lib/utils";
+import { cn } from "@/constants/utils";
 import { AnimatePresence, motion } from "motion/react";
 import { Title } from "./ui/text";
-import { slideData } from "@/constants/data";
+import { Gallery } from "@/constants/types";
+import { getAllGallery } from "@/services/galleryService";
+import { TypeGallery } from "@/constants/enum";
 
 
 const HomeDesign = () => {
+    const [data, setData] = useState<Gallery[]>([])
+    const [activeIndex, setActiveIndex] = useState<number>(0)
 
-    const [activeIndex, setActiveIndex] = useState(0)
+    useEffect(() => {
+        fetchData();
+    }, []);
 
   // Auto chuyển mỗi 3s
     useEffect(() => {
+        if(data.length === 0) return;
         const interval = setInterval(() => {
-        setActiveIndex((prev) => (prev + 1) % slideData.length)
+        setActiveIndex((prev) => (prev + 1) % data.length)
         }, 7000)
         return () => clearInterval(interval)
-    }, [])
+    }, [data])
+
+    const fetchData = async () => {
+        try {
+            const res = await getAllGallery({ params: { type: TypeGallery.DESIGN } });
+            setData(res.data.data);
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     const container = {
         hidden: { opacity: 1 },
@@ -43,7 +59,7 @@ const HomeDesign = () => {
                     <Title className="mb-6 uppercase">Thiết kế sản phẩm</Title>
                 </div>
                 <div className="flex flex-col md:flex-row h-[600px] md:h-[500px] gap-2" data-aos="fade-up" data-aos-delay="200">
-                {slideData.map((slide, index) => {
+                {data.map((slide, index) => {
                     const isActive = activeIndex === index
 
                     return (
@@ -84,7 +100,7 @@ const HomeDesign = () => {
                                 animate="visible" 
                                 className="text-sm mt-1 h-11 line-clamp-2 w-full flex flex-wrap"
                             >
-                                {slide.description.split('').map((char, idx) => (
+                                {slide?.description?.split('').map((char, idx) => (
                                 <motion.span key={idx} variants={child}>
                                     {char === ' ' ? '\u00A0' : char}
                                 </motion.span>

@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "./ui/button";
 import { Minus, Plus } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/constants/utils";
 import toast from "react-hot-toast";
 import useStore from "../../store";
 import { Product, ProductVariant } from "@/constants/types";
@@ -14,7 +14,7 @@ interface Props {
 const QuantityButtons = ({ product,variant, className }: Props) => {
   const { addItem, removeItem, getItemCount } = useStore();
   const itemCount = getItemCount(variant?.id);
-  const isOutOfStock = variant?.inventoryitems === 0;
+  const isOutOfStock = variant?.quatity === 0;
 
   const handleRemoveProduct = () => {
     removeItem(variant?.id);
@@ -26,7 +26,7 @@ const QuantityButtons = ({ product,variant, className }: Props) => {
   };
 
   const handleAddToCart = () => {
-    if ((variant?.inventoryitems as number) > itemCount) {
+    if ((variant?.quatity as number) > itemCount) {
       addItem(product, variant);
       toast.success("Đã tăng số lượng!");
     } else {

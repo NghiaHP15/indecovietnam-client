@@ -1,11 +1,13 @@
-import React, { FC, useState } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { FC, useEffect, useState } from "react";
 import Logo from "./Logo";
 import { ChevronDown, X } from "lucide-react";
-import { headerData } from "@/constants/data";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import SocialMedia from "./SocialMedia";
 import { useOutsideClick } from "@/hooks";
+import { getAllMenus } from "@/services/menuService";
+import { PositionMenu } from "@/constants/enum";
 interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
@@ -15,10 +17,28 @@ const SideMenu: FC<SidebarProps> = ({ isOpen, onClose }) => {
   const pathname = usePathname();
   const sidebarRef = useOutsideClick<HTMLDivElement>(onClose);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [data, setData] = useState<any[]>([])
 
   const toggleSubMenu = (index: number) => {
     setActiveIndex((prev) => (prev === index ? null : index));
   };
+
+  useEffect(() => {
+    fetchData();
+  },[])
+
+  const fetchData = async () => {
+    try {
+      const res = await getAllMenus();
+      if(res.data.success){
+        const header = res.data.data.find((item: any) => item.position === PositionMenu.HEADER);
+        setData(JSON.parse(header.item));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
     <div
       className={`fixed inset-y-0 h-screen left-0 z-50 w-full bg-black/50 text-white/70 shadow-xl ${
@@ -40,7 +60,7 @@ const SideMenu: FC<SidebarProps> = ({ isOpen, onClose }) => {
         </div>
 
         <div className="flex flex-col space-y-4.5 font-semibold tracking-wide">
-          {headerData.map((item, index) => {
+          {data.map((item, index) => {
             const hasSubMenu = item.items && item.items.length > 0;
 
             if (hasSubMenu) {
@@ -48,7 +68,8 @@ const SideMenu: FC<SidebarProps> = ({ isOpen, onClose }) => {
 
               return (
                 <div key={index}>
-                  <button
+                  <Link
+                    href={item.href}
                     onClick={() => toggleSubMenu(index)}
                     className={`w-full text-left flex items-center justify-between hover:text-light_brownish transition-colors ${
                       pathname === item.href ? "text-white" : ""
@@ -56,7 +77,7 @@ const SideMenu: FC<SidebarProps> = ({ isOpen, onClose }) => {
                   >
                     {item.title}
                     <ChevronDown size={20} className={`${isOpen ? "rotate-180" : ""} transition-all duration-300 ease-in-out`}/>
-                  </button>
+                  </Link>
 
                   <div
                     className={`overflow-hidden transition-all duration-300 ease-in-out ${
@@ -64,7 +85,7 @@ const SideMenu: FC<SidebarProps> = ({ isOpen, onClose }) => {
                     }`}
                   >
                     <ul className="pl-4 space-y-4.5 mt-2">
-                      {item.items.map((subItem, subIndex) => (
+                      {item.items.map((subItem: any, subIndex: number) => (
                         <li key={subIndex}>
                           <Link
                             href={subItem.href}

@@ -6,7 +6,7 @@ const BlogPage = async ({ searchParams }: { searchParams?: Promise<{ category?: 
   const { category } = await searchParams || {};
 
   return (
-    <BlogView slug={category} />
+    <BlogView category={category} />
   );
 };
 

@@ -1,8 +1,14 @@
-import { CartItem, FavoriteItem, OrderItem, Product, ProductVariant } from "@/constants/types";
+import { Address, CartItem, FavoriteItem, Order, Product, ProductVariant, User } from "@/constants/types";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 interface StoreState {
+    user: User | null;
+    token: string | null;
+    addUser: (user: User) => void;
+    addToken: (token: string) => void;
+    logout: () => void;
+    //cart
     items: CartItem[];
     addItem: (product: Product, variant: ProductVariant) => void;
     removeItem: (variantId: string) => void;
@@ -18,14 +24,37 @@ interface StoreState {
     removeFromFavorite: (variantId: string) => void;
     resetFavorite: () => void;
     //order
-    toOrderItems: () => OrderItem[];
+    orderInfo: Order | null;
+    addOrder: (order: Order) => void;
+    resetOrder: () => void;
+    //address
+    address: Address;
+    addAddress: (address: Address) => void;
+    updateAddress: (address: Address) => void;
+    removeAddress: () => void;
 }
 
 const useStore = create<StoreState>()(
   persist(
     (set, get) => ({
+      user: {
+        id: "",
+        email: "",
+        firstname: "",
+        lastname: "",
+        avatar: null,
+        provider: ""
+      },
+      token: "",
       items: [],
       favoriteProduct: [],
+      address: { id: "", receiver_name: "", address_line: "", ward: "", district: "", city: "", default: false },
+      addUser: (user) => set({ user }),
+      addToken: (token) => set({ token }),
+      logout: () => {
+        localStorage.removeItem("accessToken");
+        set({ user: null, token: null });
+      },
        addItem: (product, variant) =>
         set((state) => {
           const existing = state.items.find(
@@ -111,24 +140,14 @@ const useStore = create<StoreState>()(
       resetFavorite: () => {
         set({ favoriteProduct: [] });
       },
-      toOrderItems: () => {
-        return get().items.map((item) => ({
-          product_id: item.product.id,
-          product_name: item.product.name,
-          variant_id: item.variant.id,
-          sku: item.variant.sku,
-          image: item.variant.image || item.product.image,
-          color: item.variant.color,
-          size: item.variant.size,
-          quantity: item.quantity,
-          unit_price: item.variant.price,
-          discount: item.variant.discount,
-          total_price:
-            (item.variant.price -
-              (item.variant.price * item.variant.discount) / 100) *
-            item.quantity,
-        }));
-      },
+      orderInfo: null,
+      addOrder: (order) => set({ 
+        orderInfo: order
+      }),
+      resetOrder: () => set({ orderInfo: null }),
+      addAddress: (address) => set({ address }),
+      updateAddress: (address) => set({ address }),
+      removeAddress: () => set({ address: { id: "", receiver_name: "", address_line: "", ward: "", district: "", city: "", default: false } }),
     }),
     {
       name: "cart-store",

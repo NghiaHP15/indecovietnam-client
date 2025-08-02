@@ -1,7 +1,6 @@
 @import "tailwindcss";
-
 @plugin "tailwindcss-animate";
-
+@source inline("{hover:,}bg-{red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose,slate,gray,zinc,neutral,stone}-{50,{100..900..100},950}");
 @custom-variant dark (&:is(.dark *));
 
 @theme {
@@ -23,7 +22,6 @@
   --color-light_brownish: #c59672;
   --color-btn_dark_brownish: #ba8257;
   --color-btn_light_brownish: #c59672;
-
 }
 
 :root {
@@ -219,7 +217,8 @@ body {
   animation:showcontent 0.5s ease-in-out 1 forwards
 }
 .slider .item:nth-child(2) .content .title{
-  font-size: 80px;
+  font-size: 60px;
+  height: 70px;
   transition: all 0.5s;
   animation:showcontent 0.8s ease-in-out 1 forwards
 }
@@ -242,6 +241,7 @@ body {
     font-size: 14px;
   }
   .slider .item:nth-child(2) .content .title {
+    height: 40px;
     font-size: 30px;
   }
   .slider .item:nth-child(2) .content .des {

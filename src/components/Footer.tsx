@@ -1,14 +1,42 @@
-import React from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
+
+import React, { useEffect, useState } from "react";
 import Container from "./Container";
 import FooterTop from "./FooterTop";
 import Logo from "./Logo";
 import { SubText, SubTitle } from "./ui/text";
-import { footer1, footer2, footer3 } from "@/constants/data";
 import Link from "next/link";
 import LogoImage from "./LogoImage";
 import FacebookPage from "./FacebookPage";
+import { FooterName, PositionMenu } from "@/constants/enum";
+import { getAllMenus } from "@/services/menuService";
 
 const Footer = () => {
+  const [data, setData] = useState<any[]>([])
+
+  useEffect(() => {
+    fetchFooter()
+  }, [])
+
+  const fetchFooter = async () => {
+    try {
+      const res = await getAllMenus();
+      if(res.data.success){
+        const x = res.data.data.filter((item: any) => item?.position === PositionMenu.FOOTER);
+        const _x = x.map((i: any) => {
+          return {
+            ...i,
+            item: JSON.parse(i?.item)
+          }
+        });
+        setData(_x);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
     <footer className="bg-white border-t flex-none">
       <Container>
@@ -20,13 +48,15 @@ const Footer = () => {
               <Logo />
             </div>
             <SubText className="mt-2">
-              {footer1.description}
+              {data.find(item => item?.name === FooterName.FOOTER1)?.item?.description}
             </SubText>
           </div>
           <div>
-            <SubTitle>{footer2.title}</SubTitle>
+            <SubTitle>
+              {data.find(item => item?.name === FooterName.FOOTER2)?.item?.title}
+            </SubTitle>
             <ul className="space-y-3 mt-4">
-              {footer2?.items.map((item) => (
+              {data.find(item => item?.name === FooterName.FOOTER2)?.item?.items?.map((item: any) => (
                 <li key={item?.title}>
                   <Link
                     href={item?.href}
@@ -39,9 +69,11 @@ const Footer = () => {
             </ul>
           </div>
           <div>
-            <SubTitle>{footer3.title}</SubTitle>
+            <SubTitle>
+              {data.find(item => item?.name === FooterName.FOOTER3)?.item?.title}
+            </SubTitle>
             <ul className="space-y-3 mt-4">
-              {footer3?.items.map((item) => (
+              {data.find(item => item?.name === FooterName.FOOTER3)?.item?.items?.map((item: any) => (
                 <li key={item?.title}>
                   <Link
                     href={item?.href}
@@ -54,10 +86,11 @@ const Footer = () => {
             </ul>
           </div>
           <div className="space-y-4">
-            <SubTitle>Mạng xã hội</SubTitle>
+            <SubTitle>
+              {data.find(item => item?.name === FooterName.FOOTER4)?.item?.title}
+            </SubTitle>
             <SubText>
-              Theo dõi fanpage của chúng tôi để cập nhật những sản phẩm mới nhất và
-              các chương trình khuyến mãi hấp dẫn.
+              {data.find(item => item?.name === FooterName.FOOTER4)?.item?.description}
             </SubText>
             <FacebookPage/>
           </div>

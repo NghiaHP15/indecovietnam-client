@@ -1,5 +1,5 @@
 import { twMerge } from "tailwind-merge";
-import { cn } from "@/lib/utils";
+import { cn } from "@/constants/utils";
 import PriceFormatter from "./PriceFormatter";
 
 interface Props {
@@ -8,6 +8,8 @@ interface Props {
   className?: string;
 }
 const PriceView = ({ price, discount, className }: Props) => {
+  console.log(price, discount);
+  
   return (
     <div className="flex items-center justify-between gap-5">
       <div className="flex items-center gap-2">
