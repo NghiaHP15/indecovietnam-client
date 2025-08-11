@@ -1,6 +1,5 @@
 "use client";
 
-// import AddressSelector from "@/components/AddressSelector";
 import Breakcrum from "@/components/Breakcrum";
 import Container from "@/components/Container";
 import SideInfo from "@/components/SideInfo";
@@ -66,12 +65,6 @@ const AddressPage = () => {
                     <span className="text-gray-400">Không có địa chỉ giao hàng</span>
                     </div>
                 )}
-                </div>
-                <div className="md:col-span-2">
-                {/* <div className="flex flex-col gap-4">
-                    <h3 className="text-lg font-medium text-darkColor">Thêm điểm giao hàng</h3>
-                    <AddressSelector onChange={() => fetchUser(user?.id || "")} />
-                </div> */}
                 </div>
             </div>
             </div>

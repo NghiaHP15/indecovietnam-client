@@ -30,7 +30,7 @@ const dataDefault = {
   message: "",
 };
 
-export const contactSchema = z.object({
+const contactSchema = z.object({
   name: z.string().min(1, "Họ tên không được để trống"),
   email: z.string().email("Email không hợp lệ"),
   phone: z
