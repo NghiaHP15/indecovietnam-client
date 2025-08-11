@@ -1,16 +1,17 @@
-import { Address, CartItem, FavoriteItem, Order, Product, ProductVariant, User } from "@/constants/types";
+import { CartItem, FavoriteItem, ProductOrder, ProductVariant, User } from "@/constants/types";
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { createJSONStorage, persist } from "zustand/middleware";
 
 interface StoreState {
     user: User | null;
     token: string | null;
-    addUser: (user: User) => void;
-    addToken: (token: string) => void;
+    addUser: (user: User | null) => void;
+    addToken: (token: string | null) => void;
     logout: () => void;
     //cart
     items: CartItem[];
-    addItem: (product: Product, variant: ProductVariant) => void;
+    setItem: (items: CartItem[]) => void;
+    addItem: (product: ProductOrder, variant: ProductVariant) => void;
     removeItem: (variantId: string) => void;
     deleteCartProduct: (variantId: string) => void;
     resetCart: () => void;
@@ -20,41 +21,27 @@ interface StoreState {
     getGroupedItems: () => CartItem[];
     //favorite
     favoriteProduct: FavoriteItem[];
-    addToFavorite: (product: Product, variant: ProductVariant) => Promise<void>;
+    addToFavorite: (product: ProductOrder, variant: ProductVariant) => Promise<void>;
     removeFromFavorite: (variantId: string) => void;
     resetFavorite: () => void;
-    //order
-    orderInfo: Order | null;
-    addOrder: (order: Order) => void;
-    resetOrder: () => void;
-    //address
-    address: Address;
-    addAddress: (address: Address) => void;
-    updateAddress: (address: Address) => void;
-    removeAddress: () => void;
 }
 
 const useStore = create<StoreState>()(
   persist(
     (set, get) => ({
-      user: {
-        id: "",
-        email: "",
-        firstname: "",
-        lastname: "",
-        avatar: null,
-        provider: ""
-      },
-      token: "",
+      user: null,
+      token: null,
       items: [],
       favoriteProduct: [],
-      address: { id: "", receiver_name: "", address_line: "", ward: "", district: "", city: "", default: false },
+      address: { id: "", receiver_name: "", phone: "", address_line: "", ward: "", district: "", city: "", default: false },
       addUser: (user) => set({ user }),
       addToken: (token) => set({ token }),
       logout: () => {
         localStorage.removeItem("accessToken");
+        localStorage.removeItem("loginType");
         set({ user: null, token: null });
       },
+      setItem: (items) => set({ items }),
        addItem: (product, variant) =>
         set((state) => {
           const existing = state.items.find(
@@ -124,7 +111,7 @@ const useStore = create<StoreState>()(
                 ? state.favoriteProduct.filter(
                     (item) => item.variant.id !== variant.id
                   )
-                : [...state.favoriteProduct, { product,variant }],
+                : [...state.favoriteProduct, { product, variant }],
             };
           });
           resolve();
@@ -139,18 +126,17 @@ const useStore = create<StoreState>()(
       },
       resetFavorite: () => {
         set({ favoriteProduct: [] });
-      },
-      orderInfo: null,
-      addOrder: (order) => set({ 
-        orderInfo: order
-      }),
-      resetOrder: () => set({ orderInfo: null }),
-      addAddress: (address) => set({ address }),
-      updateAddress: (address) => set({ address }),
-      removeAddress: () => set({ address: { id: "", receiver_name: "", address_line: "", ward: "", district: "", city: "", default: false } }),
+      }
     }),
     {
       name: "cart-store",
+      storage: createJSONStorage(() => localStorage),
+      partialize: (state) => ({
+        user: state.user,
+        token: state.token,
+        items: state.items,
+        favoriteProduct: state.favoriteProduct,
+      }),
     }
   )
 );

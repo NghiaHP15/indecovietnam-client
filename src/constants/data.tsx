@@ -1,6 +1,6 @@
-import { Clock, Facebook, Instagram, Mail, MapPin, Phone, Youtube } from "lucide-react"
+import { Clock, Mail, MapPin, Phone } from "lucide-react"
 import { ContactItemData } from "./types";
-import { TikTokIcon } from "@/icons";
+import { facebook, instagram, tiktok, youtube } from "@/images";
 
 
 export const productType = [
@@ -11,10 +11,10 @@ export const productType = [
 ];
 
 export const socailLinks = [
-    { title: "Facebook", href: "https://www.facebook.com/profile.php?id=61576607768367", icon: <Facebook className="w-5 h-5"/> },
-    { title: "Instagram", href: "https://www.instagram.com/indeco.vietnam/", icon: <Instagram className="w-5 h-5"/> },
-    { title: "YouTube", href: "https://www.youtube.com", icon: <Youtube className="w-5 h-5"/> },
-    { title: "TikTok", href: "https://www.tiktok.com/@indeco_vietnam", icon: <TikTokIcon className="w-5 h-5 fill-darkColor/60"/> },
+    { title: "Facebook", href: "https://www.facebook.com/profile.php?id=61576607768367", icon: facebook.src},
+    { title: "Instagram", href: "https://www.instagram.com/indeco.vietnam/", icon: instagram.src },
+    { title: "YouTube", href: "https://www.youtube.com", icon: youtube.src },
+    { title: "TikTok", href: "https://www.tiktok.com/@indeco_vietnam", icon: tiktok.src },
 ]
 
 export const contact: ContactItemData[] = [
@@ -1245,4 +1245,11 @@ export const dataAddress: {id: string, receiverName: string, addressLine: string
     city: "Ha Noi",
     isDefault: false
   }
+]
+
+export const typeFeedbackOptions: { title: string; value: string }[] = [
+  { title: "Liên hệ", value: "contact" },
+  { title: "Thiết kế", value: "design" },
+  { title: "Dánh giá", value: "feedback" },
+  { title: "Khác", value: "other" },
 ]

@@ -8,15 +8,19 @@ const BadgePaymentStatus = ({ status }: { status: string }) => {
 
     switch(status){
         case PaymentStatus.PENDING:
-            className = "bg-blue-400"
+            className = "text-blue-400"
             text = "Chưa thanh toán"
             break;
         case PaymentStatus.PAID:
-            className = "bg-green-400"
+            className = "text-green-400"
             text = "Đã thanh toán"
             break;
+        case PaymentStatus.AWAITTING_CONFIRMATION:
+            className = "text-yellow-400"
+            text = "Đã xác nhận"
+            break;
         case PaymentStatus.CANCELLED:
-            className = "bg-red-400"
+            className = "text-red-400"
             text = "Hủy thanh toán"
             break;
         default:
@@ -24,7 +28,7 @@ const BadgePaymentStatus = ({ status }: { status: string }) => {
     }
     
     return (
-        <div className={`w-max px-3 py-1 text-sm text-white rounded-[5px] ${className}`}>{text}</div>
+        <div className={`text-sm ${className}`}>{text}</div>
     );
 };
 

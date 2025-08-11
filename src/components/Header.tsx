@@ -17,7 +17,7 @@ const Header:React.FC = () => {
     const [lastScrollY, setLastScrollY] = useState(0);
     const [isAtTop, setIsAtTop] = useState(true);
     const { user } = useStore();
-
+    
     useEffect(() => {
         const handleScroll = () => {
             const currentScrollY = window.scrollY;
@@ -49,7 +49,7 @@ const Header:React.FC = () => {
                     {/* <SearchBar /> */}
                     <Cart />
                     <FavoriteButton />
-                    {user?.id ? 
+                    {user ?
                     <UserButton/>
                     :
                     <Link href="/login" className="text-darkColor p-2 rounded-sm hover:text-light_brownish">Đăng nhập/ Đăng ký</Link>

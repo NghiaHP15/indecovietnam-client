@@ -1,13 +1,13 @@
 "use client";
 import toast from "react-hot-toast";
-import { FavoriteItem, Product, ProductVariant } from "@/constants/types";
+import { FavoriteItem,  ProductOrder, ProductVariant } from "@/constants/types";
 import { Heart } from "lucide-react";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import useStore from "../../store";
 
 interface Props {
-  product?: Product,
+  product?: ProductOrder,
   variant?: ProductVariant,
   showProduct?: boolean
 }
@@ -18,14 +18,14 @@ const FavoriteButton = ({ showProduct = false, product, variant } : Props) => {
   
   useEffect(() => {
     const availableItem = favoriteProduct.find(
-      (item) => item?.variant?.id === variant?.id && item?.product?.id === product?.id
+      (item) => item?.variant?.id === variant?.id && item?.product.slug === product?.slug
     );
     setExistingProductVariant(availableItem || null);
   }, [product, variant, favoriteProduct]);
 
   const handleFavorite = (e: React.MouseEvent<HTMLSpanElement>) => {
     e.preventDefault();
-    if (product?.id && variant?.id) {
+    if (product?.slug && variant?.id) {
       addToFavorite(product, variant).then(() => {
         toast.success(
           existingProductVariant

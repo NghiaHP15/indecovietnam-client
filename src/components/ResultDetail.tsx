@@ -16,30 +16,34 @@ const PageResultStatusDynamic = ({status, txnRef}: {status: string, txnRef: stri
     return (
         <>
         {status === StatusUrl.SUCCESS ? (
-            <div className="flex flex-col items-center justify-center px-4 py-25 md:py-32">
-                <Image
-                    src={check.src}
-                    alt="check"
-                    width={400}
-                    height={400}
-                    className="w-25 md:w-35 h-auto"
-                />
-                <h1 className="text-2xl md:text-3xl font-bold text-green-700">Thanh toán thành công</h1>
-                <span className="text-base md:text-lg text-center mt-3">Đơn hàng của quý khách đã thanh toán thành công. <br/>INDECOVIETNAM sẽ sớm liên hệ với quý khách để bàn giao sản phẩm.</span>
-                <Link href={`/order?txnRef=${txnRef}`} className="mt-6 bg-green-900 text-white px-6 py-2 rounded-xl text-lg">Thông tin đơn hàng</Link>
+            <div className="flex items-center justify-center py-12 md:py-32">
+                <div className="flex flex-col items-center justify-center w-full max-w-md px-10 py-8 bg-white rounded-2xl shadow-xl">
+                    <Image
+                        src={check.src}
+                        alt="check"
+                        width={400}
+                        height={400}
+                        className="w-25 md:w-35 h-auto"
+                    />
+                    <h1 className="text-2xl md:text-3xl font-bold text-green-700">Thanh toán thành công</h1>
+                    <span className="text-base md:text-lg text-center mt-3">Đơn hàng của quý khách đã thanh toán thành công. <br/>INDECOVIETNAM sẽ sớm liên hệ với quý khách để bàn giao sản phẩm.</span>
+                    <Link href={`/order?txnRef=${txnRef}`} className="mt-6 bg-green-900 text-white px-6 py-2 rounded-xl text-lg">Thông tin đơn hàng</Link>
+                </div>
             </div>
         ) : (
-            <div className="flex flex-col items-center justify-center px-4 py-25 md:py-32">
-                <Image
-                    src={close.src}
-                    alt="check"
-                    width={400}
-                    height={400}
-                    className="w-25 md:w-35 h-auto"
-                />
-                <h1 className="text-2xl md:text-3xl font-bold text-red-700">Thanh toán thất bại</h1>
-                <span className="text-base md:text-lg text-center mt-3">Đơn hàng của quý khách không thành công. <br/>Quý khách hãy kiểm tra lai thông tin thanh toán với INDECOVIETNAM.</span>
-                <Link href={`/checkout`} className="mt-6 bg-red-900 text-white px-6 py-2 rounded-xl text-base md:text-lg">Trở lại đơn hàng</Link>
+            <div className="flex items-center justify-center py-12 md:py-32">
+                <div className="flex flex-col items-center justify-center w-full max-w-md px-10 py-8 bg-white rounded-2xl shadow-xl">
+                    <Image
+                        src={close.src}
+                        alt="check"
+                        width={400}
+                        height={400}
+                        className="w-25 md:w-35 h-auto"
+                    />
+                    <h1 className="text-2xl md:text-3xl font-bold text-red-700">Thanh toán thất bại</h1>
+                    <span className="text-base md:text-lg text-center mt-3">Đơn hàng của quý khách không thành công. <br/>Quý khách hãy kiểm tra lai thông tin thanh toán với INDECOVIETNAM.</span>
+                    <Link href={`/checkout`} className="mt-6 bg-red-900 text-white px-6 py-2 rounded-xl text-base md:text-lg">Trở lại đơn hàng</Link>
+                </div>
             </div>
         )}
         </>

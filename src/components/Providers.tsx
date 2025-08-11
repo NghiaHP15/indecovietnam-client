@@ -7,7 +7,7 @@ import useStore from "../../store";
 
 const Providers = ({ children }: { children: React.ReactNode }) => {
   return (
-    <SessionProvider>
+    <SessionProvider refetchOnWindowFocus={false} refetchInterval={0}>
       <SyncZustandWithSession>{children}</SyncZustandWithSession>
     </SessionProvider>
   );
@@ -21,22 +21,28 @@ const SyncZustandWithSession = ({ children }: { children: React.ReactNode }) => 
   const { data: session, status } = useSession();
 
   useEffect(() => {
-    const accessToken = (session as any)?.accessToken;
+    if (status !== "authenticated") return;
 
-    if (status === "authenticated" && session?.user && accessToken) {
+    const accessToken = (session as any)?.accessToken;
+    if (!accessToken || !session?.user) return;
+
+    // ✅ Chỉ sync nếu token trong Zustand khác với token mới
+    const currentToken = localStorage.getItem("accessToken");
+    if (currentToken !== accessToken) {
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("loginType", "oauth");
       addUser(session.user);
       addToken(accessToken);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status]); // ✅ chỉ theo dõi status, không cần session trong deps
 
+  useEffect(() => {
     if (status === "unauthenticated") {
       const loginType = localStorage.getItem("loginType");
-      if (loginType === "oauth") {
-        logout(); // Clear zustand + localStorage
-      }
+      if (loginType === "oauth") logout();
     }
-  }, [status, session, addUser, addToken, logout]);
+  }, [status, logout]);
 
   return <>{children}</>;
 };

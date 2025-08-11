@@ -151,7 +151,7 @@ const ProductView = ({ room, category }: { room?: string; category?: string }) =
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-1">
           {currentData.map((item) => (
-            <ProductCard key={item.id || `${item.productCategory?.slug}-${item.name}`} product={item} />
+            <ProductCard key={item.id || `${item?.productCategory?.slug}-${item.name}`} product={item} />
           ))}
         </div>
 

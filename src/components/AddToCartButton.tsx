@@ -1,13 +1,13 @@
 "use client";
 import { cn } from "@/constants/utils";
-import { Product, ProductVariant } from "@/constants/types";
+import { ProductOrder, ProductVariant } from "@/constants/types";
 import useStore from "../../store";
 import toast from "react-hot-toast";
 import QuantityButtons from "./QuantityButton";
 import PriceFormatter from "./PriceFormatter";
 
 interface Props {
-  product: Product;
+  product: ProductOrder;
   variant: ProductVariant;
   className?: string;
 }
@@ -16,13 +16,13 @@ const AddToCartButton = ({ product, variant, className }: Props) => {
   
   const { addItem, getItemCount } = useStore();
   const itemCount = getItemCount(variant?.id);
-  const isOutOfStock = variant?.quatity === 0;
+  const isOutOfStock = variant?.quantity_in_stock === 0;
 
   const handleAddToCart = () => {
-    if ((variant?.quatity as number) > itemCount) {
+    if ((variant?.quantity_in_stock as number) > itemCount) {
       addItem(product, variant);
       toast.success(
-        `${product?.name?.substring(0, 12)}... Thêm thành công!`
+        `${product?.name.substring(0, 12)}... Thêm thành công!`
       );
     } else {
       toast.error("Không thể vào giỏ hàng");

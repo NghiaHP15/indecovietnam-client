@@ -7,6 +7,7 @@ import { Login } from "@/constants/types";
 import { login } from "@/services/authService";
 import useStore from "../../store";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const FormLogin = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -88,12 +89,12 @@ const FormLogin = () => {
         </div>
 
         <div className="flex items-end">
-          <a
-            href="#"
+          <Link
+            href="/forgot-password"
             className="ml-auto text-primary text-sm underline-offset-4 hover:opacity-80"
           >
             Quên mật khẩu?
-          </a>
+          </Link>
         </div>
       </div>
 

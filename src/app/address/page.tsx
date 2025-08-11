@@ -1,6 +1,6 @@
 "use client";
 
-import AddressSelector from "@/components/AddressSelector";
+// import AddressSelector from "@/components/AddressSelector";
 import Breakcrum from "@/components/Breakcrum";
 import Container from "@/components/Container";
 import SideInfo from "@/components/SideInfo";
@@ -43,14 +43,14 @@ const AddressPage = () => {
             <div className="py-10">
             <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
                 <SideInfo />
-                <div className="md:col-span-2 flex flex-col gap-4">
+                <div className="md:col-span-4 flex flex-col gap-4">
                 <h3 className="text-lg font-medium text-darkColor">Danh sách điểm giao hàng</h3>
                 {data.length > 0 ? (
                     data.map((item) => (
                     <AddressCard
                         key={item.id}
                         item={item}
-                        onChange={() => fetchUser(user?.id || "")}
+                        // onChange={() => fetchUser(user?.id || "")}
                     />
                     ))
                 ) : (
@@ -68,10 +68,10 @@ const AddressPage = () => {
                 )}
                 </div>
                 <div className="md:col-span-2">
-                <div className="flex flex-col gap-4">
+                {/* <div className="flex flex-col gap-4">
                     <h3 className="text-lg font-medium text-darkColor">Thêm điểm giao hàng</h3>
                     <AddressSelector onChange={() => fetchUser(user?.id || "")} />
-                </div>
+                </div> */}
                 </div>
             </div>
             </div>

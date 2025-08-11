@@ -16,7 +16,6 @@ const CarouselGallery = ({data}: {data: Gallery[]}) => {
       rootNode: (emblaRoot: HTMLElement) => emblaRoot.parentElement, 
     })
   );
-  console.log(data);
 
   const [emblaRef] = useEmblaCarousel({ loop: true, dragFree: true }, [autoplay.current]);
 

@@ -9,6 +9,7 @@ export const enum ProductStatus {
 
 export const enum OrderStatus {
     PENDING = 'pending',
+    PROCESSING = 'processing',
     SHIPPED = 'shipping',
     COMPLETED = 'completed',
     CANCELLED = 'cancelled',
@@ -74,6 +75,7 @@ export const enum StatusProduct {
 
 export const enum PaymentStatus {
     PENDING = 'pending',
+    AWAITTING_CONFIRMATION = 'awaiting_confirmation',
     PAID = 'paid',
     CANCELLED = 'cancelled',
 }

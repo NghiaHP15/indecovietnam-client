@@ -5,7 +5,6 @@ import NoAccess from "@/components/NoAccess";
 import PriceFormatter from "@/components/PriceFormatter";
 import ProductSideMenu from "@/components/ProductSideMenu";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import {
   Tooltip,
   TooltipContent,
@@ -15,15 +14,12 @@ import {
 import { ShoppingBag, Trash } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 import toast from "react-hot-toast";
 import { Title } from "@/components/ui/text";
 import QuantityButtons from "@/components/QuantityButton";
 import useStore from "../../../store";
 import Breakcrum from "@/components/Breakcrum";
-import { Address } from "@/constants/types";
-import { getCustomerById } from "@/services/userService";
-import { Checkbox } from "@/components/ui/checkbox";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { AlertDialogTrigger } from "@radix-ui/react-alert-dialog";
 import PriceView from "@/components/PriceView";
@@ -37,37 +33,16 @@ const CartPage = () => {
         resetCart,
     } = useStore();
     const groupedItems = useStore((state) => state.getGroupedItems());
-    const [addresses, setAddresses] = useState<Address[]>([]);
-    const { user, address, addAddress } = useStore();
-
-    useEffect(() => {
-        const fetchUser = async (id: string) => {
-            try {
-                const res = await getCustomerById({ id });
-                if (res.data.success) {
-                    setAddresses(res.data.data.addresses);
-                }
-            } catch (error) {
-            console.log(error);
-            } 
-        };
-        if (user?.id) {
-            fetchUser(user.id);
-        }
-    }, [user]);
+    const { user } = useStore();
 
     const handleResetCart = useCallback(() => {
         resetCart();
         toast.success("Giỏ hàng được đặt lại!");
     }, [resetCart]);
 
-    const handleUpdate = useCallback((data: Address) => {
-        addAddress(data);
-    }, [addAddress]);
-
     return (
         <>
-            {user?.id ? (
+            {user ? (
             <>
                 <Breakcrum title="Giỏ hàng" description="Chi tiết giỏ hàng" />
                 {groupedItems?.length ? (
@@ -91,8 +66,8 @@ const CartPage = () => {
                                     <div className="flex flex-1 items-start gap-2 h-30 md:h-38">
                                         {variant?.image && (
                                         <Link
-                                            href={`/product/${product?.slug}`}
-                                            className="p-0.5 md:p-1 mr-2 rounded-md
+                                            href={`/product/${product.slug}`}
+                                            className="p-0.5 md:p-1 mr-2
                                             overflow-hidden group"
                                         >
                                             <Image
@@ -101,14 +76,14 @@ const CartPage = () => {
                                             width={500}
                                             height={500}
                                             loading="lazy"
-                                            className="w-auto md:w-40 h-30 md:h-38 object-cover group-hover:scale-105 hoverEffect"
+                                            className="w-auto md:w-40 h-30 md:h-38 rounded-md object-cover group-hover:scale-105 hoverEffect"
                                             />
                                         </Link>
                                         )}
                                         <div className="h-full flex flex-1 flex-col justify-between py-1 gap-2 md:gap-4">
                                         <div className="flex flex-col gap-0.5 md:gap-1.5">
                                             <h2 className="text-lg line-clamp-1">
-                                            {product?.name}
+                                            {product.name}
                                             </h2>
                                             <div className="flex items-center flex-nowrap gap-2 text-base capitalize">
                                             <span>Màu: </span>
@@ -139,7 +114,7 @@ const CartPage = () => {
                                                 <TooltipTrigger>
                                                 <Trash
                                                     onClick={() => {
-                                                    deleteCartProduct(product?.id);
+                                                    deleteCartProduct(variant?.id);
                                                     toast.success(
                                                         "Xóa thành công!"
                                                     );
@@ -224,39 +199,6 @@ const CartPage = () => {
                                         </div>
                                     </div>
                                 </div>
-                                {addresses && (
-                                <div className="w-full bg-white p-6 rounded-lg border mt-5">
-                                    <h2 className="text-lg md:text-xl font-medium mb-4">
-                                        Địa chỉ vận chuyển
-                                    </h2>
-                                     <div className="space-y-4">
-                                        {addresses?.map((item) => (
-                                            <div
-                                            key={item?.id}
-                                            className={`${item?.id === address?.id && "text-light_brownish"} flex items-center gap-4 cursor-pointer pb-3 mb-3 border-b border-dashed border-b-gray-200 last:border-b-0 last:mb-0 last:pb-0 `}
-                                            >
-                                            <Checkbox id={item.id} checked={address.id === item.id} onCheckedChange={() => handleUpdate(item)} />
-                                            <Label
-                                                htmlFor={item?.id}
-                                                className="grid gap-1.5 flex-1 cursor-pointer"
-                                            >
-                                                <span className="text-base font-medium">
-                                                {item?.receiver_name}
-                                                </span>
-                                                <span className="text-base line-clamp-1 text-black/60">
-                                                {item?.ward}, {item?.district}, {item?.city}
-                                                </span>
-                                            </Label>
-                                            </div>
-                                        ))}
-                                        <div className="flex items-center justify-center mt-4">
-                                            <Link href="/address" className="w-max text-base text-blue-500 hover:text-blue-600 underline underline-offset-2 tracking-wide hoverEffect">
-                                                Thêm địa chỉ
-                                            </Link>
-                                        </div>
-                                     </div>
-                                </div>
-                                )}
                             </div>
                             </div>
                         </div>

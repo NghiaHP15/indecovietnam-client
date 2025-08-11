@@ -1,16 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React, { useEffect, useState } from "react";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-} from "@/components/ui/select";
-import provinceApi from "@/lib/provinceAPI";
+import React, { useState } from "react";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import { Switch } from "./ui/switch";
@@ -19,89 +9,69 @@ import { Button } from "./ui/button";
 import { Address } from "@/constants/types";
 import { createAddress } from "@/services/addressSerive";
 import useStore from "../../store";
+import LocationSelector from "./LocationSelector";
+
+const initialAddress: Address = {
+  receiver_name: "",
+  phone: "",
+  address_line: "",
+  ward: "",
+  district: "",
+  city: "",
+  default: false,
+};
 
 const AddressSelector = ({ onChange }: { onChange?: () => void }) => {
-  const [data, setData] = useState<Address>({
-    receiver_name: "",
-    address_line: "",
-    ward: "",
-    district: "",
+  const [data, setData] = useState<Address>(initialAddress);
+  const [location, setLocation] = useState({
     city: "",
-    default: false,
+    district: "",
+    ward: "",
+    cityName: "",
+    districtName: "",
+    wardName: "",
   });
 
-  const [provinces, setProvinces] = useState<any[]>([]);
-  const [districts, setDistricts] = useState<any[]>([]);
-  const [wards, setWards] = useState<any[]>([]);
-
-  const [selectedProvince, setSelectedProvince] = useState<string>("");
-  const [selectedDistrict, setSelectedDistrict] = useState<string>("");
-  const [selectedWard, setSelectedWard] = useState<string>("");
-
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState(false);
   const { user } = useStore();
 
-  useEffect(() => {
-    provinceApi.get("/p/").then((res) => setProvinces(res.data));
-  }, []);
+  const handleChange = (name: keyof Address, value: string | boolean) => {
+    setData((prev) => ({ ...prev, [name]: value }));
+  };
 
-  useEffect(() => {
-    if (selectedProvince) {
-      provinceApi
-        .get(`/p/${selectedProvince}?depth=2`)
-        .then((res) => setDistricts(res.data.districts || []));
-      setSelectedDistrict("");
-      setWards([]);
-    }
-  }, [selectedProvince]);
-
-  useEffect(() => {
-    if (selectedDistrict) {
-      provinceApi
-        .get(`/d/${selectedDistrict}?depth=2`)
-        .then((res) => setWards(res.data.wards || []));
-      setSelectedWard("");
-    }
-  }, [selectedDistrict]);
-
-  const handleChange = (value: string | boolean, name: string) => {
-    setData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+  const resetForm = () => {
+    setData(initialAddress);
+    setLocation({
+      city: "",
+      district: "",
+      ward: "",
+      cityName: "",
+      districtName: "",
+      wardName: "",
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!user?.id) return;
 
-    const _data = {
+    const payload = {
       ...data,
-      city: provinces.find((p) => p.code.toString() === selectedProvince)?.name || "",
-      district: districts.find((d) => d.code.toString() === selectedDistrict)?.name || "",
-      ward: wards.find((w) => w.code.toString() === selectedWard)?.name || "",
+      city: location.cityName,
+      district: location.districtName,
+      ward: location.wardName,
       customer: { id: user.id },
     };
 
     try {
       setLoading(true);
-      const res = await createAddress(_data);
+      const res = await createAddress(payload);
       if (res.data.success) {
-        onChange?.(); // callback reload
-        setData({
-          receiver_name: "",
-          address_line: "",
-          ward: "",
-          district: "",
-          city: "",
-          default: false,
-        });
-        setSelectedProvince("");
-        setSelectedDistrict("");
-        setSelectedWard("");
+        onChange?.();
+        resetForm();
       }
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      console.error("Create address failed:", err);
     } finally {
       setLoading(false);
     }
@@ -110,104 +80,57 @@ const AddressSelector = ({ onChange }: { onChange?: () => void }) => {
   return (
     <form onSubmit={handleSubmit}>
       <div className="grid grid-cols-2 gap-4 border p-4 border-gray-200 rounded-2xl">
+        {/* Người nhận */}
         <div>
           <label className="text-sm mb-1 block">Người nhận</label>
           <Input
             required
             value={data.receiver_name}
-            onChange={(e) => handleChange(e.target.value, "receiver_name")}
+            onChange={(e) => handleChange("receiver_name", e.target.value)}
             placeholder="Người nhận"
           />
         </div>
 
+        {/* Số điện thoại */}
         <div>
-          <label className="text-sm mb-1 block">Tỉnh / Thành phố</label>
-          <Select value={selectedProvince} onValueChange={setSelectedProvince} required>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Chọn tỉnh / thành phố" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                {provinces.map((province) => (
-                  <SelectItem key={province.code} value={province.code.toString()}>
-                    {province.name}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div>
-          <label className="text-sm mb-1 block">Quận / Huyện</label>
-          <Select
-            value={selectedDistrict}
-            onValueChange={setSelectedDistrict}
-            disabled={!selectedProvince}
+          <label className="text-sm mb-1 block">Số điện thoại</label>
+          <Input
             required
-          >
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Chọn quận / huyện" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                {districts.map((district) => (
-                  <SelectItem key={district.code} value={district.code.toString()}>
-                    {district.name}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
+            value={data.phone}
+            onChange={(e) => handleChange("phone", e.target.value)}
+            placeholder="Số điện thoại"
+          />
         </div>
 
-        <div>
-          <label className="text-sm mb-1 block">Xã / Phường</label>
-          <Select
-            value={selectedWard}
-            onValueChange={setSelectedWard}
-            disabled={!selectedDistrict}
-            required
-          >
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Chọn xã / phường" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                {wards.map((ward) => (
-                  <SelectItem key={ward.code} value={ward.code.toString()}>
-                    {ward.name}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
+        {/* Chọn địa chỉ */}
+        <div className="col-span-2">
+          <label className="text-sm mb-1 block">Địa chỉ</label>
+          <LocationSelector value={location} onChange={setLocation} />
         </div>
 
+        {/* Địa chỉ cụ thể */}
         <div className="col-span-2">
           <label className="text-sm mb-1 block">Địa chỉ cụ thể</label>
           <Textarea
             value={data.address_line}
-            onChange={(e) => handleChange(e.target.value, "address_line")}
+            onChange={(e) => handleChange("address_line", e.target.value)}
             placeholder="Địa chỉ cụ thể"
-            className="w-full"
-            required
           />
         </div>
 
-        <div className="col-span-2">
-          <div className="flex items-center space-x-2">
-            <Switch
-              id="is-default"
-              checked={data.default}
-              onCheckedChange={(checked) => handleChange(checked, "default")}
-            />
-            <Label htmlFor="is-default" className="text-sm font-normal">
-              Địa chỉ mặc định
-            </Label>
-          </div>
+        {/* Địa chỉ mặc định */}
+        <div className="col-span-2 flex items-center space-x-2">
+          <Switch
+            id="is-default"
+            checked={data.default}
+            onCheckedChange={(checked) => handleChange("default", checked)}
+          />
+          <Label htmlFor="is-default" className="text-sm font-normal">
+            Địa chỉ mặc định
+          </Label>
         </div>
 
+        {/* Nút submit */}
         <div className="col-span-2 flex justify-end">
           <Button type="submit" isLoading={loading}>
             Thêm địa chỉ

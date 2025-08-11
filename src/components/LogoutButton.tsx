@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
 
 const LogoutButton = ({ className }: { className?: string }) => {
-    const { addUser, addToken, resetCart, resetFavorite, removeAddress } = useStore();
+    const { addUser, addToken, resetCart, resetFavorite } = useStore();
     const router = useRouter();
 
     const handleLogout = async () => {
@@ -14,11 +14,11 @@ const LogoutButton = ({ className }: { className?: string }) => {
             const res = await logout();
             if(res.data.success){
                 localStorage.removeItem("accessToken");
-                addUser({ id: "" , email: "", firstname: "", lastname: "", avatar: "", provider: ""});
+                localStorage.removeItem("loginType");
+                addUser(null);
                 resetFavorite();
                 resetCart();
-                removeAddress();
-                addToken("");
+                addToken(null);
                 await signOut({ redirect: false });
                 router.push("/");
             }

@@ -112,20 +112,24 @@ const OrderDetailView = ({ txnRef }: {txnRef: string}) => {
                                     </div>
                                     <div className="flex flex-col gap-2">
                                         <div className="flex gap-4 items-start justify-between">
-                                            <span className="whitespace-nowrap">Họ tên: </span>
-                                            <span>{data?.customer?.firstname} {" "} {data?.customer?.lastname }</span>
-                                        </div>
-                                        <div className="flex gap-4 items-start justify-between">
                                             <span className="whitespace-nowrap">Email: </span>
                                             <span>{data?.customer?.email}</span>
                                         </div>
                                         <div className="flex gap-4 items-start justify-between">
+                                            <span className="whitespace-nowrap">Khách hàng: </span>
+                                            <span>{data?.customer?.firstname} {" "} {data?.customer?.lastname }</span>
+                                        </div>
+                                        <div className="flex gap-4 items-start justify-between">
+                                            <span className="whitespace-nowrap">Người nhận: </span>
+                                            <span>{data?.address?.receiver_name}</span>
+                                        </div>
+                                        <div className="flex gap-4 items-start justify-between">
                                             <span className="whitespace-nowrap">Số điện thoại: </span>
-                                            <span>{data?.customer?.phone}</span>
+                                            <span>{data?.address?.phone}</span>
                                         </div>
                                         <div className="flex gap-4 items-start justify-between">
                                             <span className="whitespace-nowrap">Địa chỉ:</span>
-                                            <span>{data?.address}</span>
+                                            <span>{data?.address?.address_line + " - " + data?.address?.ward + " - " + data?.address?.district + " - " + data?.address?.city}</span>
                                         </div>
                                     </div>
                                 </div>

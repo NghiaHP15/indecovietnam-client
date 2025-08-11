@@ -11,6 +11,11 @@ import shoppingCart from "./shopping-cart.gif";
 import check from "./check.gif";
 import close from "./close.gif";
 import loadImage from "./loading.gif";
+import facebook from "./facebook.png";
+import instagram from "./instagram.png";
+import tiktok from "./tiktok.png";
+import youtube from "./youtube.png";
+
 
 export { 
     emptyCart, 
@@ -25,5 +30,9 @@ export {
     shoppingCart, 
     check, 
     close, 
-    loadImage
+    loadImage,
+    facebook,
+    instagram,
+    tiktok,
+    youtube
 };

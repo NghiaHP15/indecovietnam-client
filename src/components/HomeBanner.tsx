@@ -24,8 +24,6 @@ const HomeBanner = () => {
             console.log(error);
         }
     }
-
-    console.log(data)
     return (
         <div className="py-10 md:py-10 bg-shop_light_pink/50">
             <Container>

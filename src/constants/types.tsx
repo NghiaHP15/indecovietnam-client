@@ -29,7 +29,7 @@ export interface Customer {
   firstname: string;
   lastname: string;
   gender: string;
-  date_of_birth: string;
+  date_of_birth: Date | null;
   avatar: string | null;
   level: string;
   addressese: Address[];
@@ -104,23 +104,30 @@ export interface ProductVariant {
   price: number;
   discount: number;
   is_active: boolean; 
-  quatity: number;
+  quantity_in_stock: number;
+  quantity_selled: number;
+}
+
+export interface ProductOrder {
+ name: string;
+ slug: string;
 }
 
 export interface CartItem {
-  product: Product;
+  product: ProductOrder;
   variant: ProductVariant;
   quantity: number;
 }
 
 export interface FavoriteItem {
-  product: Product;
+  product: ProductOrder;
   variant: ProductVariant;
 }
 
 export interface OrderItem {
   id: string;
   name: string;
+  slug: string;
   total_price: number;
   quantity: number;
   product_variant: ProductVariant;
@@ -133,7 +140,7 @@ export interface Order {
   status?: OrderStatus;
   payment_status?: PaymentStatus;
   total_amount: number;
-  address: string;
+  address: Address;
   note?: string;
   paymentmethod?: PaymentMethod;
   customer: User;
@@ -195,6 +202,7 @@ export interface Service {
 export interface Address {
   id?: string,
   receiver_name: string,
+  phone: string,
   address_line: string,
   ward: string,
   district: string,
@@ -229,8 +237,20 @@ export interface Payment {
 export interface Feedback {
   id?: string,
   name: string,
+  avartar?: string,
+  role?: string,
   email: string,
   phone: string,
+  type: string,
   subject: string,
   message: string
+}
+
+export interface LocationValue {
+  city: string;
+  cityName: string;
+  district: string;
+  districtName: string;
+  ward: string;
+  wardName: string;
 }

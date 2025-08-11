@@ -10,7 +10,7 @@ const FeedBackCard = ({ data }: { data: Feedback }) => {
         <p className="text-lightColor">{data?.message}</p>
         <div className="flex items-center gap-4">
           <Image
-            src={defautUser.src}
+            src={data?.avartar || defautUser.src}
             alt=""
             width={500}
             height={500}
@@ -18,7 +18,7 @@ const FeedBackCard = ({ data }: { data: Feedback }) => {
           />
           <div className="space-y-1">
             <h4 className="text-light_brownish">{data?.name}</h4>
-            <span className="text-sm text-lightColor">{data?.subject}</span>
+            <span className="text-sm text-lightColor">{data?.role || "Khách hàng"}</span>
           </div>
         </div>
     </div>

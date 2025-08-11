@@ -41,7 +41,6 @@ const WishListProducts = () => {
                                 <th className="p-2 pl-10 font-medium text-left">Hình ảnh</th>
                                 <th className="p-2 font-medium text-left">Tên sản phẩm</th>
                                 <th className="p-2 font-medium text-left hidden md:table-cell">Loại</th>
-                                <th className="p-2 font-medium text-left hidden md:table-cell">Danh mục</th>
                                 <th className="p-2 font-medium text-left hidden md:table-cell">Trạng thái</th>
                                 <th className="p-2 font-medium text-left ">Giá</th>
                                 <th className="p-2 font-medium text-center md:text-left">Hành động</th>
@@ -63,7 +62,7 @@ const WishListProducts = () => {
                                         />
                                         {item?.variant?.image && (
                                         <Link
-                                            href={`/product/${item?.product?.slug}`}
+                                            href={`/product/${item?.product.slug}`}
                                             className="rounded-md group"
                                         >
                                             <Image
@@ -77,7 +76,7 @@ const WishListProducts = () => {
                                         )}
                                     </td>
                                     <td className="p-2">
-                                        <span className="line-clamp-1">{item?.product?.name}</span>
+                                        <span className="line-clamp-1">{item?.product.name}</span>
                                     </td>
                                     <td className="p-2 capitalize hidden md:table-cell">
                                         <div className="flex items-center gap-3">
@@ -85,21 +84,14 @@ const WishListProducts = () => {
                                             <span>{item?.variant?.size}</span>
                                         </div>
                                     </td>
-                                    <td className="p-2 capitalize hidden md:table-cell">
-                                        {item?.product?.productCategory?.title && (
-                                        <p className="uppercase line-clamp-1 text-xs font-medium">
-                                            {item?.product?.productCategory?.title}
-                                        </p>
-                                        )}
-                                    </td>
                                     <td
                                         className={`p-2 w-24 ${
-                                        (item?.variant?.quatity as number) > 0
+                                        (item?.variant?.quantity_in_stock as number) > 0
                                             ? "text-green-600"
                                             : "text-red-600"
                                         } font-medium text-sm hidden md:table-cell`}
                                     >
-                                        {(item?.variant?.quatity as number) > 0
+                                        {(item?.variant?.quantity_in_stock as number) > 0
                                         ? "Còn hàng"
                                         : "Hết hàng"}
                                     </td>

@@ -3,6 +3,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/t
 import { socailLinks } from "@/constants/data";
 import { cn } from "@/constants/utils";
 import Link from "next/link";
+import Image from "next/image";
 
 interface SocialMediaProps {
   className?: string;
@@ -22,9 +23,9 @@ const SocialMedia = ({className, iconClassName, tooltipClassName} : SocialMediaP
                             key={item?.title}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className={cn("p-2 border rounded-full hover:text-white hover:border-light_brownish hoverEffect", iconClassName)}
+                            className={cn("",iconClassName)}
                         >
-                            {item?.icon}
+                            <Image src={item?.icon} alt={item?.title} width={20} height={20} className="w-10 h-10 hover:scale-110 hoverEffect" />
                         </Link>
                     </TooltipTrigger>
                     <TooltipContent className={cn(" ", tooltipClassName)}>

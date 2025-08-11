@@ -9,7 +9,7 @@ const WishListPage = () => {
 
     return (
         <>
-            {user?.id ? (
+            {user ? (
                 <WishListProducts />
             ) : (
                 <NoAccess details="Vui lòng đang nhập để xem danh sách yêu thích" />

@@ -36,7 +36,7 @@ const handler = NextAuth({
         (account as any).customAccessToken = res.data.data.accessToken;
         return true;
       }
-      return true;
+      return false;
     },
     async jwt({ token, user, account }) {
       if (user) {

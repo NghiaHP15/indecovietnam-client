@@ -42,26 +42,22 @@ const Cart = () => {
                         className="border-b p-2.5 last:border-b-0 flex items-center justify-between gap-5"
                       >
                         <div className="flex flex-1 items-start gap-2 ">
-                          {item?.product?.image && (
-                            <Link
-                              href={`/product/${item?.product?.slug}`}
-                              className="p-0.5 md:p-1 mr-2 rounded-md
-                               overflow-hidden group"
-                            >
+                          {item?.variant?.image && (
+                            <div className="p-0.5 md:p-1 mr-2 rounded-md overflow-hidden group" >
                               <Image
-                                src={item.product?.image}
+                                src={item?.variant?.image}
                                 alt="productImage"
                                 width={500}
                                 height={500}
                                 loading="lazy"
                                 className="w-23 h-auto object-cover rounded-[5px] group-hover:scale-105 hoverEffect"
                               />
-                            </Link>
+                            </div>
                           )}
                           <div className="h-full flex flex-1 flex-col justify-between py-1">
                             <div className="flex flex-col gap-0.5 md:gap-1.5">
                               <h2 className="text-base line-clamp-1">
-                                {item?.product?.name}
+                                {item?.product.name}
                               </h2>
                               <div className="flex items-center gap-3">
                                 <span className={`w-5 h-5 border border-gray-200 rounded-[5px] ${item?.variant?.color?.code}`}></span>
@@ -70,7 +66,7 @@ const Cart = () => {
                               <div className="flex items-center gap-3">
                                 <QuantityButtons variant={item?.variant} product={item?.product} />
                                 <PriceFormatter
-                                  amount={(item?.product?.variants[0].price as number) * itemCount}
+                                  amount={(item?.variant?.price as number) * itemCount}
                                   className="text-lg font-medium"
                                 />
                               </div>

@@ -8,27 +8,31 @@ const BadgeOrderStatus = ({ status }: { status: string }) => {
 
     switch(status){
         case OrderStatus.PENDING:
-            className = "bg-blue-500"
-            text = "Đang xử lý"
+            className = "text-yellow-500"
+            text = "Chờ xử lý"
+            break;
+        case OrderStatus.PROCESSING:
+            className = "text-blue-500"
+            text = "Đã nhận"
             break;
         case OrderStatus.SHIPPED:
-            className = "bg-orange-500"
+            className = "text-orange-500"
             text = "Đang vận chuyển"
             break;
         case OrderStatus.CANCELLED:
-            className = "bg-red-500"
-            text = "Đang vận chuyển"
+            className = "text-red-500"
+            text = "Đã hủy"
             break;
         case OrderStatus.COMPLETED:
-            className = "bg-green-500"
-            text = "Đang vận chuyển"
+            className = "text-green-500"
+            text = "Hoàn thành"
             break;
         default:
             break;
     }
     
     return (
-        <div className={`w-max px-3 py-1 text-sm text-white rounded-[5px] ${className}`}>{text}</div>
+        <div className={`text-sm ${className}`}>{text}</div>
     );
 };
 

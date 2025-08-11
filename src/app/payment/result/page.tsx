@@ -7,7 +7,7 @@ const PageResultStatus =  async ({ searchParams }: { searchParams?: Promise<{ st
 
     return (
         <>
-        <PageResultStatusDynamic status={status as StatusUrl} txnRef={txnRef as string} />
+            <PageResultStatusDynamic status={status as StatusUrl} txnRef={txnRef as string} />
         </>
     );
 };
