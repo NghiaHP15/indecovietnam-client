@@ -36,7 +36,7 @@ const AddressPage = () => {
 
   return (
     <div>
-    {user?.id ? (
+    {user ? (
         <>
         <Breakcrum title="Địa chỉ" description="Cập nhật địa chỉ" />
         <Container>
